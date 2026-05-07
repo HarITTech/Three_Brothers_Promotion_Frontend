@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { label: 'Packages', href: '#packages' },
   { label: 'FAQ', href: '#faq' },
   { label: 'About Us', href: '#team' },
-  { label: 'Blog', href: '#' },
+  // { label: 'Blog', href: '#' },
 ];
 
 const SECTIONS = ['home', 'stats', 'results', 'protocol', 'packages', 'faq', 'team', 'contact'];
@@ -70,7 +70,7 @@ export default function Header() {
                 </a>
               </li>
             ))}
-            <li>
+            {/* <li>
               <a
                 href="https://fobetmedia.com/career/"
                 className="careers-link"
@@ -80,7 +80,7 @@ export default function Header() {
               >
                 Careers&nbsp;<span className="hiring-badge">Hiring</span>
               </a>
-            </li>
+            </li> */}
           </ul>
           <a href="#contact" className="header-cta" onClick={closeMenu}>
             Get Started <i className="fa-solid fa-arrow-right"></i>

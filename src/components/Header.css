@@ -8,7 +8,7 @@
   left: 0;
   width: 100%;
   z-index: 999999;
-  background: rgba(20, 27, 48, 0.85);
+  background: rgba(235, 239, 253, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -16,7 +16,7 @@
 }
 
 .site-header.scrolled {
-  background: var(--bg-overlay-95, rgba(15, 18, 30, 0.95));
+  background: var(--bg-overlay-95, rgba(198, 204, 229, 0.95));
   border-bottom-color: rgba(238, 130, 238, 0.3);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
@@ -62,7 +62,7 @@
 }
 
 .nav-menu a {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(12, 19, 58, 0.85);
   text-decoration: none;
   font-size: 15px;
   font-weight: 600;

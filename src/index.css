@@ -3,78 +3,125 @@
    ============================================================ */
 
 :root {
-  /* ── Backgrounds ── */
-  --bg-deep:         #141B30;
-  --bg-dark:         #0f121e;
-  --bg-card:         rgba(255, 255, 255, 0.03);
-  --bg-card-hover:   rgba(255, 255, 255, 0.05);
-  --bg-card-7:       rgba(255, 255, 255, 0.07);
-  --bg-modal:        rgba(20, 27, 48, 0.85);
-  --bg-overlay-dark: rgba(15, 18, 30, 0.95);
-  --bg-overlay-98:   rgba(15, 18, 30, 0.98);
 
-  /* ── Brand / Primary ── */
-  --brand-pink:      #ee82ee;
-  --brand-violet:    #d946ef;
-  --brand-purple:    #a855f7;
-  --brand-magenta:   #c026d3;
-  --brand-pink-2:    #ff86c7;
-  --brand-pink-3:    #ffb7e5;
-  --brand-pink-4:    #ffd4ed;
-  --brand-indigo:    #6366f1;
-  --brand-violet-2:  #8b5cf6;
+  /* ===============================
+     BACKGROUNDS
+  =============================== */
+  --bg-deep: #f8f7ff;
+  --bg-dark: #ffffff;
 
-  /* ── Accent Colours ── */
-  --accent-green:    #10b981;
-  --accent-green-2:  #059669;
-  --accent-green-3:  #047857;
-  --accent-green-4:  #4ade80;
-  --accent-cyan:     #22d3ee;
-  --accent-yellow:   #f59e0b;
-  --accent-amber:    #fbbf24;
-  --accent-rose:     #ec4899;
+  --bg-card: rgba(255, 255, 255, 0.75);
+  --bg-card-hover: rgba(255, 255, 255, 0.92);
+  --bg-card-7: rgba(124, 58, 237, 0.06);
 
-  /* ── Text ── */
-  --text-white:       #ffffff;
-  --text-muted:       rgba(255, 255, 255, 0.7);
-  --text-muted-85:    rgba(255, 255, 255, 0.85);
-  --text-subtle:      #94a3b8;
-  --text-light:       #cbd5e1;
-  --text-medium:      #e2e8f0;
-  --text-slate:       #9ca3af;
-  --text-pink:        #ee82ee;
-  --text-pink-2:      #ff86c7;
+  --bg-modal: rgba(255, 255, 255, 0.92);
 
-  /* ── Borders ── */
-  --border-subtle:    rgba(255, 255, 255, 0.05);
-  --border-low:       rgba(255, 255, 255, 0.08);
-  --border-white:     rgba(255, 255, 255, 0.1);
-  --border-white-2:   rgba(255, 255, 255, 0.15);
-  --border-white-3:   rgba(255, 255, 255, 0.2);
-  --border-pink:      rgba(255, 134, 199, 0.3);
-  --border-pink-2:    rgba(255, 134, 199, 0.4);
-  --border-pink-3:    rgba(255, 134, 199, 0.5);
-  --border-brand:     rgba(238, 130, 238, 0.2);
-  --border-brand-3:   rgba(238, 130, 238, 0.3);
+  --bg-overlay-dark: rgba(248, 247, 255, 0.95);
+  --bg-overlay-98: rgba(255, 255, 255, 0.98);
 
-  /* ── Gradients (reusable) ── */
-  --grad-brand:       linear-gradient(135deg, #ee82ee, #d946ef);
-  --grad-brand-2:     linear-gradient(135deg, #ff86c7, #d946ef);
-  --grad-brand-ext:   linear-gradient(135deg, #ee82ee, #d946ef, #c026d3);
-  --grad-brand-full:  linear-gradient(135deg, #ff86c7, #d946ef, #a855f7);
-  --grad-green:       linear-gradient(135deg, #10b981, #059669);
-  --grad-whatsapp:    linear-gradient(135deg, #25D366, #128C7E);
+  /* ===============================
+     PRIMARY BRAND COLORS
+  =============================== */
+  --brand-pink: #8b5cf6;
+  --brand-violet: #7c3aed;
+  --brand-purple: #6d28d9;
+  --brand-magenta: #5b21b6;
 
-  /* ── Social / Services ── */
-  --whatsapp:         #25D366;
-  --whatsapp-dark:    #128C7E;
-  --instagram:        #e1306c;
-  --linkedin:         #0a66c2;
+  --brand-pink-2: #a78bfa;
+  --brand-pink-3: #c4b5fd;
+  --brand-pink-4: #ede9fe;
 
-  /* ── Typography ── */
-  --font-primary:    'Space Grotesk', sans-serif;
-  --font-heading:    'Montserrat', sans-serif;
-  --font-body:       'Poppins', sans-serif;
+  --brand-indigo: #6366f1;
+  --brand-violet-2: #9333ea;
+
+  /* ===============================
+     ACCENT COLORS
+  =============================== */
+  --accent-green: #7c3aed;
+  --accent-green-2: #6d28d9;
+  --accent-green-3: #5b21b6;
+  --accent-green-4: #c4b5fd;
+
+  --accent-cyan: #818cf8;
+  --accent-yellow: #8b5cf6;
+  --accent-amber: #a78bfa;
+  --accent-rose: #9333ea;
+
+  /* ===============================
+     TEXT COLORS
+  =============================== */
+  --text-white: #111827;
+
+  --text-muted: rgba(17, 24, 39, 0.65);
+  --text-muted-85: rgba(17, 24, 39, 0.85);
+
+  --text-subtle: #6b7280;
+  --text-light: #4b5563;
+  --text-medium: #1f2937;
+  --text-slate: #94a3b8;
+
+  --text-pink: #7c3aed;
+  --text-pink-2: #8b5cf6;
+
+  /* ===============================
+     BORDERS
+  =============================== */
+  --border-subtle: rgba(124, 58, 237, 0.05);
+  --border-low: rgba(124, 58, 237, 0.08);
+
+  --border-white: rgba(124, 58, 237, 0.10);
+  --border-white-2: rgba(124, 58, 237, 0.14);
+  --border-white-3: rgba(124, 58, 237, 0.18);
+
+  --border-pink: rgba(139, 92, 246, 0.22);
+  --border-pink-2: rgba(139, 92, 246, 0.32);
+  --border-pink-3: rgba(139, 92, 246, 0.45);
+
+  --border-brand: rgba(124, 58, 237, 0.14);
+  --border-brand-3: rgba(124, 58, 237, 0.24);
+
+  /* ===============================
+     GRADIENTS
+  =============================== */
+  --grad-brand:
+    linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+
+  --grad-brand-2:
+    linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+
+  --grad-brand-ext:
+    linear-gradient(135deg,
+      #8b5cf6 0%,
+      #7c3aed 50%,
+      #6366f1 100%);
+
+  --grad-brand-full:
+    linear-gradient(135deg,
+      #ddd6fe 0%,
+      #a78bfa 40%,
+      #7c3aed 100%);
+
+  --grad-green:
+    linear-gradient(135deg, #8b5cf6, #6366f1);
+
+  --grad-whatsapp:
+    linear-gradient(135deg, #8b5cf6, #6366f1);
+
+  /* ===============================
+     SOCIAL COLORS
+  =============================== */
+  --whatsapp: #7c3aed;
+  --whatsapp-dark: #5b21b6;
+
+  --instagram: #8b5cf6;
+  --linkedin: #6366f1;
+
+  /* ===============================
+     TYPOGRAPHY
+  =============================== */
+  --font-primary: 'Space Grotesk', sans-serif;
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Poppins', sans-serif;
 }
 
 /* ── Global Reset ── */
