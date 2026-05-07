@@ -1,0 +1,248 @@
+/* ContactSection.css */
+.contact-section-wrapper * {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.contact-grid-proof {
+  display: block !important;
+  font-family: var(--font-primary) !important;
+  background: var(--bg-dark) !important;
+  color: var(--text-white) !important;
+  padding: 120px 20px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
+.contact-bg-grid-wrap {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+.contact-bg-grid {
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px) !important;
+  background-size: 50px 50px !important;
+  transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px) !important;
+  animation: contactGridMove 25s linear infinite !important;
+}
+
+.contact-bg-glow {
+  position: absolute !important;
+  width: 800px !important;
+  height: 800px !important;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.1), transparent 70%) !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+}
+
+@keyframes contactGridMove {
+  0% {
+    transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px);
+  }
+
+  100% {
+    transform: perspective(500px) rotateX(60deg) translateY(50px) translateZ(-200px);
+  }
+}
+
+.contact-particle {
+  position: absolute !important;
+  width: 4px !important;
+  height: 4px !important;
+  background: var(--brand-pink-2) !important;
+  border-radius: 50% !important;
+  opacity: 0.45 !important;
+  animation: rise 15s linear infinite !important;
+  z-index: 2 !important;
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.5;
+  }
+
+  90% {
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+.contact-grid {
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  align-items: center !important;
+  gap: 70px !important;
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+.img-wrap {
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  transition: transform 0.4s ease !important;
+  position: relative !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.img-wrap:hover {
+  transform: translateY(-10px) !important;
+  border-color: rgba(255, 134, 199, 0.4) !important;
+}
+
+.img-wrap img {
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+.contact-text {
+  padding: 20px 0 !important;
+}
+
+.contact-badge {
+  display: inline-block !important;
+  padding: 8px 24px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 50px !important;
+  font-size: 12px !important;
+  color: var(--brand-pink-2) !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 28px !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.contact-grid-proof h2 {
+  font-size: clamp(40px, 5vw, 56px) !important;
+  font-weight: 900 !important;
+  line-height: 1.05 !important;
+  margin: 0 0 20px 0 !important;
+  color: var(--text-white) !important;
+  font-family: var(--font-heading) !important;
+}
+
+.contact-grid-proof h2 .gradient-text {
+  background: linear-gradient(135deg, var(--brand-pink-2), var(--brand-pink-3), var(--brand-violet)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  display: inline-block !important;
+}
+
+.contact-grid-proof p {
+  font-size: 18px !important;
+  color: var(--text-subtle) !important;
+  line-height: 1.65 !important;
+  margin: 0 0 40px 0 !important;
+}
+
+.contact-grid-proof p strong {
+  color: var(--brand-pink-2) !important;
+  font-weight: 700 !important;
+}
+
+.wa-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 18px 50px !important;
+  background: var(--grad-whatsapp) !important;
+  color: var(--text-white) !important;
+  font-weight: 800 !important;
+  font-size: 18px !important;
+  text-decoration: none !important;
+  border-radius: 60px !important;
+  box-shadow: 0 15px 45px rgba(37, 211, 102, 0.45) !important;
+  transition: all 0.4s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-family: var(--font-heading) !important;
+}
+
+.wa-btn:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 25px 65px rgba(37, 211, 102, 0.65) !important;
+}
+
+.contact-note {
+  margin-top: 32px !important;
+  font-size: 15px !important;
+  color: var(--text-light) !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.contact-note i {
+  color: var(--whatsapp) !important;
+  font-size: 16px !important;
+}
+
+.contact-note strong {
+  color: var(--text-white) !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 968px) {
+  .contact-grid-proof {
+    padding: 100px 20px !important;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 50px !important;
+    text-align: center !important;
+  }
+
+  .contact-grid-proof h2 {
+    font-size: 44px !important;
+  }
+
+  .wa-btn {
+    padding: 18px 50px !important;
+    font-size: 18px !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .contact-note {
+    justify-content: center !important;
+  }
+
+  .img-wrap {
+    max-width: 500px !important;
+    margin: 0 auto !important;
+  }
+}

@@ -1,0 +1,15 @@
+/* LeadModal.css */
+.lead-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,27,48,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 99999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1); font-family: var(--font-heading), sans-serif; }
+.lead-modal-overlay.active { opacity: 1; pointer-events: auto; }
+.lead-modal-content { background: linear-gradient(145deg, rgba(30,41,70,0.98) 0%, rgba(20,27,48,1) 100%); border: 2px solid rgba(238,130,238,0.4); border-radius: 28px; padding: 45px; width: 90%; max-width: 480px; box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 40px rgba(238,130,238,0.15); transform: translateY(60px) scale(0.95); transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275); position: relative; text-align: center; color: var(--text-white); }
+.lead-modal-overlay.active .lead-modal-content { transform: translateY(0) scale(1); }
+.modal-close { position: absolute; top: 16px; right: 20px; background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 22px; cursor: pointer; transition: color 0.2s ease; line-height: 1; }
+.modal-close:hover { color: var(--text-white); }
+.modal-badge { display: inline-block; padding: 6px 16px; background: rgba(238,130,238,0.15); border: 1px solid rgba(238,130,238,0.3); border-radius: 30px; font-size: 11px; color: var(--brand-pink); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+.modal-headline { font-size: clamp(26px,4vw,34px); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
+.modal-headline .gradient-text { background: var(--grad-brand-ext); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.modal-sub { font-size: 15px; color: var(--text-subtle); line-height: 1.6; margin-bottom: 30px; font-family: var(--font-primary); }
+.modal-cta { display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; background: var(--grad-brand); color: var(--text-white); font-weight: 800; font-size: 16px; text-decoration: none; border-radius: 50px; box-shadow: 0 10px 30px rgba(238,130,238,0.4); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; justify-content: center; }
+.modal-cta:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(238,130,238,0.6); }
+.modal-dismiss { margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.4); cursor: pointer; transition: color 0.2s; background: none; border: none; width: 100%; }
+.modal-dismiss:hover { color: rgba(255,255,255,0.7); }
