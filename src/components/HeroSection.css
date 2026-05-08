@@ -31,7 +31,7 @@
   position: fixed;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle, rgba(104, 99, 247, 0.333), transparent 70%);
+  background: radial-gradient(circle, rgba(124, 120, 247, 0.356), transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   transform: translate(-50%, -50%);
@@ -62,7 +62,7 @@
   position: absolute;
   width: 4px;
   height: 4px;
-  background: rgba(132, 130, 238, 0.4);
+  background: rgba(4, 0, 253, 0.867);
   border-radius: 50%;
   animation: floatParticle 10s infinite ease-in-out;
   box-shadow: 0 0 8px rgba(137, 130, 238, 0.3);
@@ -245,6 +245,7 @@
   border-bottom: none;
   border-radius: 250px 250px 0 0;
   z-index: 1;
+  /* background-color: #4d2cf0d4; */
 }
 
 .founder-glow {
@@ -364,6 +365,9 @@
   padding: 15px 25px;
   border-right: 4px solid var(--brand-violet-2);
   max-width: 260px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .card-stats-vibhav-2 {
@@ -668,6 +672,8 @@
   .hero-container {
     flex-direction: column;
     gap: 40px;
+    /* background: #000; */
+    margin-top: 65px;
   }
 
   .content-wrapper {

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline - Fobet Media Protocol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* RESET & BASE */
+        .timeline-section-wrapper * {
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* SECTION CONTAINER */
+        .timeline-section {
+            width: 100% !important;
+            padding: 120px 20px !important;
+            background: #0f121e !important;
+            position: relative !important;
+            overflow: hidden !important;
+            font-family: 'Space Grotesk', sans-serif !important;
+            color: white !important;
+        }
+
+        /* AMBIENT GLOWS */
+        .timeline-glow {
+            position: absolute !important;
+            width: 600px !important;
+            height: 600px !important;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1), transparent 70%) !important;
+            border-radius: 50% !important;
+            pointer-events: none !important;
+            z-index: 0 !important;
+        }
+
+        .glow-top-left {
+            top: 0 !important;
+            left: -200px !important;
+        }
+
+        .glow-bottom-right {
+            bottom: 0 !important;
+            right: -200px !important;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%) !important;
+        }
+
+        /* HEADER */
+        .timeline-header {
+            text-align: center !important;
+            margin-bottom: 100px !important;
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        .timeline-badge {
+            display: inline-block !important;
+            padding: 8px 24px !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 50px !important;
+            font-size: 12px !important;
+            color: #ff86c7 !important;
+            font-weight: 700 !important;
+            letter-spacing: 2px !important;
+            margin-bottom: 20px !important;
+            text-transform: uppercase !important;
+        }
+
+        .timeline-title {
+            font-size: clamp(36px, 5vw, 60px) !important;
+            font-weight: 800 !important;
+            margin-bottom: 15px !important;
+            color: white !important;
+            line-height: 1.1 !important;
+            letter-spacing: -1px !important;
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ff86c7, #d946ef, #a855f7) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            display: inline-block !important;
+        }
+
+        .timeline-desc {
+            font-size: clamp(16px, 2vw, 18px) !important;
+            color: #94a3b8 !important;
+            font-family: 'Space Grotesk', sans-serif !important;
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            line-height: 1.6 !important;
+        }
+
+        /* --- TIMELINE STRUCTURE --- */
+        .timeline-container {
+            max-width: 1100px !important;
+            margin: 0 auto !important;
+            position: relative !important;
+            z-index: 5 !important;
+        }
+
+        /* The Central Line (Gray Track) */
+        .timeline-line-bg {
+            position: absolute !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 50% !important;
+            width: 4px !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            transform: translateX(-50%) !important;
+            border-radius: 4px !important;
+        }
+
+        /* The Active Line (Pink Fill) */
+        .timeline-line-fill {
+            position: absolute !important;
+            top: 0 !important;
+            left: 50% !important;
+            width: 4px !important;
+            height: 0;
+            background: linear-gradient(180deg, #ff86c7, #d946ef) !important;
+            transform: translateX(-50%) !important;
+            border-radius: 4px !important;
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.6) !important;
+            transition: height 0.1s linear !important;
+            z-index: 1 !important;
+        }
+
+        /* TIMELINE ITEM ROW */
+        .timeline-item {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin-bottom: 120px !important;
+            position: relative !important;
+            width: 100% !important;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        /* The Central Dot */
+        .timeline-dot {
+            position: absolute !important;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 24px !important;
+            height: 24px !important;
+            background: #0f121e !important;
+            border: 3px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 50% !important;
+            z-index: 2 !important;
+            transition: all 0.4s ease !important;
+            box-shadow: 0 0 0 4px #0f121e !important;
+        }
+
+        .timeline-item.active .timeline-dot {
+            border-color: #ff86c7 !important;
+            background: #ff86c7 !important;
+            box-shadow: 0 0 20px rgba(255, 134, 199, 0.6), 0 0 0 4px #0f121e !important;
+            transform: translate(-50%, -50%) scale(1.2) !important;
+        }
+
+        /* SIDES */
+        .timeline-content-side {
+            width: 45% !important;
+            padding: 0 40px !important;
+            position: relative !important;
+        }
+
+        .timeline-empty-side {
+            width: 45% !important;
+        }
+
+        /* Alternating Logic */
+        .timeline-item:nth-child(odd) .timeline-content-side {
+            order: 1 !important;
+            text-align: right !important;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-empty-side {
+            order: 3 !important;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            order: 2 !important;
+        }
+
+        .timeline-item:nth-child(even) .timeline-empty-side {
+            order: 1 !important;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content-side {
+            order: 3 !important;
+            text-align: left !important;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            order: 2 !important;
+        }
+
+        /* CONTENT CARD (Text) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            backdrop-filter: blur(10px) !important;
+            padding: 30px !important;
+            border-radius: 20px !important;
+            position: relative !important;
+            transition: transform 0.3s ease, border-color 0.3s ease !important;
+            overflow: hidden !important;
+        }
+
+        .timeline-item.active .glass-card {
+            border-color: rgba(255, 134, 199, 0.3) !important;
+            transform: translateY(-5px) !important;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Giant Number Background */
+        .step-number {
+            position: absolute !important;
+            top: -20px !important;
+            font-size: 100px !important;
+            font-weight: 900 !important;
+            color: rgba(255, 255, 255, 0.03) !important;
+            line-height: 1 !important;
+            z-index: 0 !important;
+            pointer-events: none !important;
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
+        .timeline-item:nth-child(odd) .step-number {
+            right: 10px !important;
+        }
+
+        .timeline-item:nth-child(even) .step-number {
+            left: 10px !important;
+        }
+
+        /* Content inside card */
+        .step-details {
+            position: relative !important;
+            z-index: 1 !important;
+        }
+
+        .step-details h3 {
+            font-size: 22px !important;
+            font-weight: 700 !important;
+            color: #fff !important;
+            margin-bottom: 10px !important;
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
+        .step-details p {
+            font-size: 15px !important;
+            color: #cbd5e1 !important;
+            line-height: 1.6 !important;
+            font-family: 'Space Grotesk', sans-serif !important;
+        }
+
+        .step-icon {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 50px !important;
+            height: 50px !important;
+            background: linear-gradient(135deg, #ff86c7, #d946ef) !important;
+            border-radius: 12px !important;
+            color: white !important;
+            font-size: 20px !important;
+            margin-bottom: 15px !important;
+            box-shadow: 0 5px 15px rgba(217, 70, 239, 0.3) !important;
+        }
+
+        /* IMAGE CARD */
+        .timeline-image-card {
+            width: 100% !important;
+            height: 220px !important;
+            border-radius: 20px !important;
+            overflow: hidden !important;
+            position: relative !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .timeline-image-card img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            opacity: 0.8 !important;
+            transition: opacity 0.3s ease, transform 0.5s ease !important;
+        }
+
+        .timeline-item.active .timeline-image-card img {
+            opacity: 1 !important;
+            transform: scale(1.05) !important;
+        }
+
+        .timeline-empty-side .timeline-image-card {
+            display: block !important;
+            max-width: 400px !important;
+            margin: 0 auto !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 968px) {
+            .timeline-section {
+                padding: 80px 20px !important;
+            }
+
+            .timeline-line-bg,
+            .timeline-line-fill {
+                left: 20px !important;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                margin-bottom: 60px !important;
+                padding-left: 50px !important;
+            }
+
+            .timeline-dot {
+                left: 20px !important;
+                top: 30px !important;
+                transform: translate(-50%, 0) !important;
+            }
+
+            .timeline-item.active .timeline-dot {
+                transform: translate(-50%, 0) scale(1.2) !important;
+            }
+
+            .timeline-content-side {
+                width: 100% !important;
+                padding: 0 !important;
+                order: 2 !important;
+                text-align: left !important;
+                margin-top: 20px !important;
+                margin-bottom: 0 !important;
+            }
+
+            .timeline-empty-side {
+                width: 100% !important;
+                order: 1 !important;
+                margin-bottom: 0 !important;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content-side {
+                text-align: left !important;
+                order: 2 !important;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-empty-side {
+                order: 1 !important;
+            }
+
+            .timeline-image-card {
+                height: 180px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content-side {
+                text-align: left !important;
+            }
+
+            .step-number {
+                top: 10px !important;
+                right: 20px !important;
+                left: auto !important;
+                font-size: 60px !important;
+            }
+
+            .step-details h3 {
+                font-size: 18px !important;
+                line-height: 1.3 !important;
+                white-space: normal !important;
+                word-wrap: break-word !important;
+            }
+
+            .step-details p {
+                font-size: 14px !important;
+            }
+
+            .glass-card {
+                padding: 25px !important;
+            }
+
+            .step-icon {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 18px !important;
+                margin-bottom: 12px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="timeline-section">
+        <!-- Ambient Glows -->
+        <div class="timeline-glow glow-top-left"></div>
+        <div class="timeline-glow glow-bottom-right"></div>
+
+        <!-- Header -->
+        <div class="timeline-header">
+            <div class="timeline-badge">SYSTEMATIZED GROWTH</div>
+            <h2 class="timeline-title">Our Proven <span class="gradient-text">Personal Branding
+                    Agency Protocol</span></h2>
+            <p class="timeline-desc">We Don't Guess. Our Personal Branding Expert follows a proven
+                scientific process to scale your brand.</p>
+        </div>
+
+        <div class="timeline-container" id="timelineContainer">
+            <!-- Lines -->
+            <div class="timeline-line-bg"></div>
+            <div class="timeline-line-fill" id="timelineFill"></div>
+
+            <!-- STEP 1 -->
+            <div class="timeline-item">
+                <div class="timeline-content-side">
+                    <div class="glass-card">
+                        <div class="step-number">01</div>
+                        <div class="step-details">
+                            <div class="step-icon"><i class="fa-solid fa-microscope"></i></div>
+                            <h3>Deep-Dive Research</h3>
+                            <p>We analyze your competitors, niche gaps, and viral patterns to build
+                                a data-backed content strategy.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+                <div class="timeline-empty-side">
+                    <div class="timeline-image-card">
+                        <img decoding="async" src="./wp-content/uploads/2026/01/01.jpg" alt="Research">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="timeline-item">
+                <div class="timeline-empty-side">
+                    <div class="timeline-image-card">
+                        <img decoding="async" src="./wp-content/uploads/2026/01/02.jpg" alt="Scripting">
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+                <div class="timeline-content-side">
+                    <div class="glass-card">
+                        <div class="step-number">02</div>
+                        <div class="step-details">
+                            <div class="step-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                            <h3>Viral Scripting</h3>
+                            <p>We write 25-30 psychologically hooked scripts designed to stop the
+                                scroll and retain viewers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="timeline-item">
+                <div class="timeline-content-side">
+                    <div class="glass-card">
+                        <div class="step-number">03</div>
+                        <div class="step-details">
+                            <div class="step-icon"><i class="fa-solid fa-video"></i></div>
+                            <h3>Guided Shooting</h3>
+                            <p>You record for just 2 days a month. We provide direction, shot lists,
+                                and real-time guidance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+                <div class="timeline-empty-side">
+                    <div class="timeline-image-card">
+                        <img decoding="async" src="./wp-content/uploads/2026/01/03.jpg" alt="Shooting">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="timeline-item">
+                <div class="timeline-empty-side">
+                    <div class="timeline-image-card">
+                        <img decoding="async" src="./wp-content/uploads/2026/01/04.jpg" alt="Editing">
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+                <div class="timeline-content-side">
+                    <div class="glass-card">
+                        <div class="step-number">04</div>
+                        <div class="step-details">
+                            <div class="step-icon"><i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <h3>High-Retention Editing</h3>
+                            <p>Our editors apply Alex Hormozi-style pacing, captions, and b-roll to
+                                maximize watch time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5 -->
+            <div class="timeline-item">
+                <div class="timeline-content-side">
+                    <div class="glass-card">
+                        <div class="step-number">05</div>
+                        <div class="step-details">
+                            <div class="step-icon"><i class="fa-solid fa-rocket"></i></div>
+                            <h3>Strategic Posting</h3>
+                            <p>We handle the upload, hashtags, SEO optimization, and timing to hit
+                                the algorithm perfectly.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+                <div class="timeline-empty-side">
+                    <div class="timeline-image-card">
+                        <img decoding="async" src="./wp-content/uploads/2026/01/05.jpg" alt="Posting">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6 -->
+            <div class="timeline-item">
+                <div class="timeline-empty-side">
+                    <div class="timeline-image-card">
+                        <img decoding="async" src="./wp-content/uploads/2026/01/06.jpg" alt="Automation">
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+                <div class="timeline-content-side">
+                    <div class="glass-card">
+                        <div class="step-number">06</div>
+                        <div class="step-details">
+                            <div class="step-icon"><i class="fa-solid fa-users-gear"></i></div>
+                            <h3>Growth Management</h3>
+                            <p>We manage your community, reply to comments, and nurture leads via DM
+                                automation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const timelineContainer = document.getElementById('timelineContainer');
+            const fillLine = document.getElementById('timelineFill');
+            const items = document.querySelectorAll('.timeline-item');
+
+            function updateTimeline() {
+                const rect = timelineContainer.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                const startPoint = windowHeight * 0.6;
+                const endPoint = rect.height;
+
+                let scrollY = startPoint - rect.top;
+
+                if (scrollY < 0) scrollY = 0;
+                if (scrollY > endPoint) scrollY = endPoint;
+
+                fillLine.style.height = `${scrollY}px`;
+
+                items.forEach(item => {
+                    const itemRect = item.getBoundingClientRect();
+                    const triggerPoint = windowHeight * 0.7;
+
+                    if (itemRect.top < triggerPoint) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+
+            updateTimeline();
+
+            window.addEventListener('scroll', updateTimeline);
+            window.addEventListener('resize', updateTimeline);
+        });
+    </script>
+
+</body>
+
+</html>

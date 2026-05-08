@@ -1,10 +1,22 @@
 import { useState, useEffect } from 'react';
+import { api } from '../services/api';
 import './LeadModal.css';
 
 const WA_URL = 'https://wa.me/919128006318?text=Hi%2C%20I%20would%20like%20to%20book%20a%20discovery%20call.';
 
 export default function LeadModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState('');
+
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await api.getSectionData('hero-section');
+      if (data && data.whatsappUrl) {
+        setWhatsappUrl(data.whatsappUrl);
+      }
+    };
+    loadData();
+  }, []);
 
   useEffect(() => {
     const handleMouseLeave = (e) => {
@@ -35,7 +47,7 @@ export default function LeadModal() {
         <p className="modal-sub">
           Book your <strong>Free Strategy Session</strong> with Vibhav Raj today and get a custom roadmap for your creator journey.
         </p>
-        <a href={WA_URL} className="modal-cta" target="_blank" rel="noopener noreferrer">
+        <a href={whatsappUrl || WA_URL} className="modal-cta" target="_blank" rel="noopener noreferrer">
           Book My Call <i className="fa-brands fa-whatsapp"></i>
         </a>
         <button className="modal-dismiss" onClick={closeModal}>No thanks, I'll figure it out myself</button>

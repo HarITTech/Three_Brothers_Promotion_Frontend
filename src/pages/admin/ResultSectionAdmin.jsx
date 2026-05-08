@@ -152,23 +152,23 @@ export default function ResultSectionAdmin() {
         <form onSubmit={handleMainSubmit}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
             <div className="admin-form-group">
-              <label>Result Tag</label>
+              <label>Result Badge (e.g., OUR IMPACT)</label>
               <input className="admin-form-control" value={data.resultTag || ''} onChange={e => setData({...data, resultTag: e.target.value})} required />
             </div>
             <div className="admin-form-group">
-              <label>Heading 1</label>
+              <label>Primary Heading (e.g., Numbers That)</label>
               <input className="admin-form-control" value={data.heading1 || ''} onChange={e => setData({...data, heading1: e.target.value})} required />
             </div>
             <div className="admin-form-group">
-              <label>Heading 2 (Optional)</label>
+              <label>Gradient Heading (e.g., Speak)</label>
               <input className="admin-form-control" value={data.heading2 || ''} onChange={e => setData({...data, heading2: e.target.value})} />
             </div>
             <div className="admin-form-group">
-              <label>End Text (Optional)</label>
+              <label>Bottom Call-to-Action Text (e.g., and many more...)</label>
               <input className="admin-form-control" value={data.endText || ''} onChange={e => setData({...data, endText: e.target.value})} />
             </div>
             <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-              <label>Description (Optional)</label>
+              <label>Subtext Description</label>
               <textarea className="admin-form-control" value={data.desc || ''} onChange={e => setData({...data, desc: e.target.value})} />
             </div>
           </div>

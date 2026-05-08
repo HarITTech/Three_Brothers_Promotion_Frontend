@@ -20,7 +20,8 @@ export default function PackagesSectionAdmin() {
   const [isEditingPackage, setIsEditingPackage] = useState(false);
   const [currentPackageId, setCurrentPackageId] = useState(null);
   const [packageForm, setPackageForm] = useState({
-    heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: '', badge: '', features: ''
+    heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: '', badge: '', features: '',
+    guaranteeTitle: '', guaranteeText: ''
   });
 
   useEffect(() => {
@@ -87,7 +88,10 @@ export default function PackagesSectionAdmin() {
 
   const openAddPackage = () => {
     if (!docId) return alert('Please save the main section first!');
-    setPackageForm({ heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: '', badge: '', features: '' });
+    setPackageForm({ 
+      heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: '', badge: '', features: '',
+      guaranteeTitle: '', guaranteeText: ''
+    });
     setIsEditingPackage(false);
     setShowPackageModal(true);
   };
@@ -101,7 +105,9 @@ export default function PackagesSectionAdmin() {
       tag2: pkg.tag2 || '',
       btnName: pkg.btnName || '',
       badge: pkg.badge || '',
-      features: (pkg.packData || []).join('\n')
+      guaranteeTitle: pkg.guaranteeTitle || '',
+      guaranteeText: pkg.guaranteeText || '',
+      features: (pkg.points || []).join('\n')
     });
     setCurrentPackageId(pkg._id);
     setIsEditingPackage(true);
@@ -121,7 +127,9 @@ export default function PackagesSectionAdmin() {
         tag2: packageForm.tag2,
         btnName: packageForm.btnName,
         badge: packageForm.badge,
-        packData: packageForm.features.split('\n').filter(s => s.trim() !== '')
+        guaranteeTitle: packageForm.guaranteeTitle,
+        guaranteeText: packageForm.guaranteeText,
+        points: packageForm.features.split('\n').filter(s => s.trim() !== '')
       };
 
       if (isEditingPackage) {
@@ -254,8 +262,16 @@ export default function PackagesSectionAdmin() {
                   <label>Badge (e.g. 'Most Popular')</label>
                   <input className="admin-form-control" value={packageForm.badge} onChange={e => setPackageForm({...packageForm, badge: e.target.value})} />
                 </div>
+                <div className="admin-form-group">
+                  <label>Guarantee Title</label>
+                  <input className="admin-form-control" value={packageForm.guaranteeTitle} onChange={e => setPackageForm({...packageForm, guaranteeTitle: e.target.value})} />
+                </div>
+                <div className="admin-form-group">
+                  <label>Guarantee Text</label>
+                  <input className="admin-form-control" value={packageForm.guaranteeText} onChange={e => setPackageForm({...packageForm, guaranteeText: e.target.value})} />
+                </div>
                 <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-                  <label>Features (One per line)</label>
+                  <label>Features (One per line, use &lt;strong&gt;Text&lt;/strong&gt; for bold)</label>
                   <textarea className="admin-form-control" style={{ minHeight: '100px' }} value={packageForm.features} onChange={e => setPackageForm({...packageForm, features: e.target.value})} />
                 </div>
               </div>

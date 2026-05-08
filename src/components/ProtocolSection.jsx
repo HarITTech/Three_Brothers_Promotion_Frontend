@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { api } from '../services/api';
 import './ProtocolSection.css';
 
@@ -32,14 +32,17 @@ export default function ProtocolSection() {
     loadData();
   }, []);
 
-  const activeSteps = apiData?.protocol?.length > 0
-    ? apiData.protocol.map((p) => ({
+  const activeSteps = useMemo(() => {
+    if (apiData?.protocol?.length > 0) {
+      return apiData.protocol.map((p) => ({
         icon: p.icon || 'fa-solid fa-circle-check',
         title: p.heading,
         img: p.image,
         desc: p.desc
-      }))
-    : STEPS;
+      }));
+    }
+    return STEPS;
+  }, [apiData]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,25 +52,40 @@ export default function ProtocolSection() {
 
       const rect = container.getBoundingClientRect();
       const windowH = window.innerHeight;
-      const progress = Math.min(
-        Math.max((windowH - rect.top) / (rect.height - windowH), 0),
-        1
-      );
-      fill.style.height = `${progress * 100}%`;
+
+      // Logic from Protocol.html
+      const startPoint = windowH * 0.6;
+      const endPoint = rect.height;
+
+      let scrollY = startPoint - rect.top;
+
+      if (scrollY < 0) scrollY = 0;
+      if (scrollY > endPoint) scrollY = endPoint;
+
+      fill.style.height = `${scrollY}px`;
 
       const items = container.querySelectorAll('.timeline-item');
       let newActive = -1;
       items.forEach((item, i) => {
         const ir = item.getBoundingClientRect();
-        if (ir.top < windowH * 0.65) newActive = i;
+        const triggerPoint = windowH * 0.7; // Logic from Protocol.html
+        if (ir.top < triggerPoint) newActive = i;
       });
       setActiveIdx(newActive);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [activeSteps.length]);
+    window.addEventListener('resize', handleScroll);
+    
+    // Small delay to ensure DOM is updated and measurements are correct
+    const timer = setTimeout(handleScroll, 100);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      clearTimeout(timer);
+    };
+  }, [activeSteps]);
 
   return (
     <section className="timeline-section" id="protocol">

@@ -13,6 +13,8 @@ export default function HeroSectionAdmin() {
     heroBadge2: '',
     heroBadge3: '',
     heroBadge4: '',
+    whatsappUrl: '',
+    whatsappNumber: '',
     teamMember: []
   });
   const [docId, setDocId] = useState(null);
@@ -207,6 +209,14 @@ export default function HeroSectionAdmin() {
               <label>Bottom Badge 4</label>
               <input className="admin-form-control" value={data.heroBadge4 || ''} onChange={e => setData({...data, heroBadge4: e.target.value})} />
             </div>
+            <div className="admin-form-group">
+              <label>WhatsApp Strategy Call URL (Full Link)</label>
+              <input className="admin-form-control" value={data.whatsappUrl || ''} onChange={e => setData({...data, whatsappUrl: e.target.value})} placeholder="https://wa.me/919128006318?text=Hi..." />
+            </div>
+            <div className="admin-form-group">
+              <label>WhatsApp Display Number</label>
+              <input className="admin-form-control" value={data.whatsappNumber || ''} onChange={e => setData({...data, whatsappNumber: e.target.value})} placeholder="+91 91280 06318" />
+            </div>
           </div>
           <button type="submit" className="admin-btn" style={{ marginTop: '15px' }}>Save Main Content</button>
         </form>
@@ -258,27 +268,27 @@ export default function HeroSectionAdmin() {
             <h3>{isEditingMember ? 'Edit Team Member' : 'Add Team Member'}</h3>
             <form onSubmit={handleMemberSubmit}>
               <div className="admin-form-group">
-                <label>Name</label>
+                <label>Name (e.g., Riya Upreti)</label>
                 <input className="admin-form-control" value={memberForm.name} onChange={e => setMemberForm({...memberForm, name: e.target.value})} required />
               </div>
               <div className="admin-form-group">
-                <label>Role</label>
+                <label>Primary Role Badge (e.g., FOUNDER)</label>
                 <input className="admin-form-control" value={memberForm.role} onChange={e => setMemberForm({...memberForm, role: e.target.value})} required />
               </div>
               <div className="admin-form-group">
-                <label>Description (Optional)</label>
-                <input className="admin-form-control" value={memberForm.desc} onChange={e => setMemberForm({...memberForm, desc: e.target.value})} />
-              </div>
-              <div className="admin-form-group">
-                <label>Badge (Optional)</label>
+                <label>Secondary Expert Badge (e.g., Personal Branding Expert)</label>
                 <input className="admin-form-control" value={memberForm.badge} onChange={e => setMemberForm({...memberForm, badge: e.target.value})} />
               </div>
               <div className="admin-form-group">
-                <label>Instagram ID (Optional)</label>
+                <label>Biography Paragraph (Use &lt;span className="bio-highlight"&gt;text&lt;/span&gt; to highlight words)</label>
+                <textarea className="admin-form-control" value={memberForm.desc} onChange={e => setMemberForm({...memberForm, desc: e.target.value})} />
+              </div>
+              <div className="admin-form-group">
+                <label>Instagram Full URL</label>
                 <input className="admin-form-control" value={memberForm.instagramId} onChange={e => setMemberForm({...memberForm, instagramId: e.target.value})} />
               </div>
               <div className="admin-form-group">
-                <label>LinkedIn ID (Optional)</label>
+                <label>LinkedIn Full URL</label>
                 <input className="admin-form-control" value={memberForm.linkedInId} onChange={e => setMemberForm({...memberForm, linkedInId: e.target.value})} />
               </div>
               <div className="admin-form-group">

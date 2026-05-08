@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { api } from '../services/api';
 import './TeamSection.css';
 import riya from '../assets/images/riya.jpg';
 import vibhav from '../assets/images/vibhav.jpg';
@@ -34,6 +36,46 @@ const FOUNDERS = [
 ];
 
 export default function TeamSection() {
+  const [apiData, setApiData] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await api.getSectionData('hero-section');
+      if (data) setApiData(data);
+    };
+    loadData();
+  }, []);
+
+  const teamMembers = apiData?.teamMember?.length > 0 ? apiData.teamMember.map(m => {
+    const links = [];
+    if (m.instagramId) {
+      links.push({ href: m.instagramId, cls: 'instagram', icon: 'fa-brands fa-instagram', label: 'Instagram' });
+    }
+    if (m.linkedInId) {
+      links.push({ href: m.linkedInId, cls: 'linkedin', icon: 'fa-brands fa-linkedin', label: 'LinkedIn' });
+    }
+    
+    const badges = [];
+    if (m.role) {
+      badges.push({ label: m.role, cls: 'role-badge' });
+    }
+    if (m.badge) {
+      badges.push({ label: m.badge, cls: 'role-badge expert-badge' });
+    }
+
+    return {
+      img: m.image,
+      alt: m.name,
+      badges: badges,
+      name: m.name,
+      bio: m.desc ? (
+        m.desc.includes('<span class="bio-highlight">') || m.desc.includes('<span className="bio-highlight">') ? 
+          <span dangerouslySetInnerHTML={{ __html: m.desc }} /> : m.desc
+      ) : '',
+      links: links
+    };
+  }) : FOUNDERS;
+
   return (
     <div className="about-section-wrapper" id="team">
       <section className="about-team-section">
@@ -54,11 +96,11 @@ export default function TeamSection() {
 
         <div className="team-container">
           <div className="founders-row">
-            {FOUNDERS.map((f) => (
-              <div key={f.name} className="member-card founder-card">
+            {teamMembers.map((f, i) => (
+              <div key={f.name || i} className="member-card founder-card">
                 <div className="avatar-wrapper">
                   <div className="founder-ring" />
-                  <img src={f.img} alt={f.alt} className="avatar-img" decoding="async" />
+                  <img src={f.img || riya} alt={f.alt} className="avatar-img" decoding="async" />
                 </div>
                 <div className="badges-row">
                   {f.badges.map((b) => (

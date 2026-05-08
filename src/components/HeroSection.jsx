@@ -40,19 +40,19 @@ export default function HeroSection() {
     loadData();
   }, []);
 
-  const activeFounders = apiData?.teamMember?.length > 0 
+  const activeFounders = apiData?.teamMember?.length > 0
     ? apiData.teamMember.map((m, i) => ({
-        key: m._id || `member-${i}`,
-        name: m.name,
-        label: m.role,
-        img: m.image,
-        imgClass: i === 0 ? 'founder-img riya' : 'founder-img vibhav',
-        cards: i === 0 ? ['card-stats-riya', 'card-social-riya', 'card-views-riya'] : ['card-stats-vibhav', 'card-stats-vibhav-2', 'card-social-vibhav'],
-        badge: m.badge,
-        instagramId: m.instagramId,
-        linkedInId: m.linkedInId,
-        desc: m.desc
-      }))
+      key: m._id || `member-${i}`,
+      name: m.name,
+      label: m.role,
+      img: m.image,
+      imgClass: i === 0 ? 'founder-img riya' : 'founder-img vibhav',
+      cards: i === 0 ? ['card-stats-riya', 'card-social-riya', 'card-views-riya'] : ['card-stats-vibhav', 'card-stats-vibhav-2', 'card-social-vibhav'],
+      badge: m.badge,
+      instagramId: m.instagramId,
+      linkedInId: m.linkedInId,
+      desc: m.desc
+    }))
     : FOUNDERS;
 
   // Auto-slide
@@ -114,8 +114,8 @@ export default function HeroSection() {
           {/* ── Left content ── */}
           <div className="content-wrapper">
             <div className="logo-badge hero-fade-in delay-1">
-              <div className="logo-icon">FM</div>
-              <span className="logo-text">{apiData?.heroTag || 'Fobet Media'}</span>
+              <div className="logo-icon">TB</div>
+              <span className="logo-text">{apiData?.heroTag || 'Three Brothers Promotion'}</span>
             </div>
 
             <span className="hero-headline hero-fade-in delay-2">
@@ -132,13 +132,12 @@ export default function HeroSection() {
                           <path d="M 5 10 Q 150 0 295 8" stroke="url(#heroGrad)" strokeWidth="3" fill="none" strokeLinecap="round" />
                           <defs>
                             <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#ee82ee" />
-                              <stop offset="100%" stopColor="#d946ef" />
+                              <stop offset="0%" stopColor="#4d2cf0d4" />
+                              <stop offset="100%" stopColor="#4d2cf0d4" />
                             </linearGradient>
                           </defs>
                         </svg>
                       </span>{' '}
-                      Agency
                     </>
                   )}
                 </>
@@ -153,13 +152,12 @@ export default function HeroSection() {
                       <path d="M 5 10 Q 150 0 295 8" stroke="url(#heroGrad)" strokeWidth="3" fill="none" strokeLinecap="round" />
                       <defs>
                         <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#ee82ee" />
-                          <stop offset="100%" stopColor="#d946ef" />
+                          <stop offset="0%" stopColor="#4d2cf0d4" />
+                          <stop offset="100%" stopColor="#4d2cf0d4" />
                         </linearGradient>
                       </defs>
                     </svg>
                   </span>{' '}
-                  Agency
                 </>
               )}
             </span>
@@ -169,7 +167,7 @@ export default function HeroSection() {
             </span>
 
             <div className="cta-wrapper hero-fade-in delay-4">
-              <a href={WA_URL} className="btn-primary" target="_blank" rel="noopener noreferrer">
+              <a href={apiData?.whatsappUrl || WA_URL} className="btn-primary" target="_blank" rel="noopener noreferrer">
                 <i className="fa-brands fa-whatsapp" />
                 Book Strategy Call
               </a>
@@ -208,9 +206,11 @@ export default function HeroSection() {
             {current === 1 && (
               <>
                 <div className="float-card card-stats-vibhav" style={{ display: 'flex' }}>
+                  <div className="stat-icon"><i className="fa-solid fa-users" /></div>
                   <div className="stat-content">
                     <h4>{activeFounders[1]?.badge || apiData?.heroBadge2 || '100K+'}</h4>
-                    <div className="stat-content-text">{activeFounders[1]?.desc ? activeFounders[1].desc.split('\\n').map((l,i)=><span key={i}>{l}<br/></span>) : <>Guaranteed Follower Growth<br />or Full Refund</>}</div>
+                    {/* <div className="stat-content-text">{activeFounders[1]?.desc ? activeFounders[1].desc.split('\\n').map((l, i) => <span key={i}>{l}<br /></span>) : <>Guaranteed Follower Growth<br />or Full Refund</>}</div> */}
+                    <p><i className="fa-solid fa-arrow-trend-up" /> {activeFounders[1]?.desc || 'Guaranteed Follower Growth'}</p>
                   </div>
                 </div>
                 <div className="float-card card-social-vibhav" style={{ display: 'flex' }}>

@@ -2,6 +2,15 @@ import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import '../../admin.css';
 
+const PROTOCOL_ICONS = [
+  { label: 'Microscope (Research)', value: 'fa-solid fa-microscope' },
+  { label: 'Pen Nib (Scripting)', value: 'fa-solid fa-pen-nib' },
+  { label: 'Video (Shooting)', value: 'fa-solid fa-video' },
+  { label: 'Magic Sparkles (Editing)', value: 'fa-solid fa-wand-magic-sparkles' },
+  { label: 'Rocket (Posting)', value: 'fa-solid fa-rocket' },
+  { label: 'Users Gear (Growth)', value: 'fa-solid fa-users-gear' },
+];
+
 export default function ProtocolSectionAdmin() {
   const [data, setData] = useState({
     protocolTag: '',
@@ -19,7 +28,7 @@ export default function ProtocolSectionAdmin() {
   const [showProtocolModal, setShowProtocolModal] = useState(false);
   const [isEditingProtocol, setIsEditingProtocol] = useState(false);
   const [currentProtocolId, setCurrentProtocolId] = useState(null);
-  const [protocolForm, setProtocolForm] = useState({ heading: '', desc: '', icon: '' });
+  const [protocolForm, setProtocolForm] = useState({ heading: '', desc: '', icon: PROTOCOL_ICONS[0].value });
   const [protocolImage, setProtocolImage] = useState(null);
 
   useEffect(() => {
@@ -86,14 +95,18 @@ export default function ProtocolSectionAdmin() {
 
   const openAddProtocol = () => {
     if (!docId) return alert('Please save the main section first!');
-    setProtocolForm({ heading: '', desc: '', icon: '' });
+    setProtocolForm({ heading: '', desc: '', icon: PROTOCOL_ICONS[0].value });
     setProtocolImage(null);
     setIsEditingProtocol(false);
     setShowProtocolModal(true);
   };
 
   const openEditProtocol = (protocol) => {
-    setProtocolForm({ heading: protocol.heading || '', desc: protocol.desc || '', icon: protocol.icon || '' });
+    setProtocolForm({ 
+      heading: protocol.heading || '', 
+      desc: protocol.desc || '', 
+      icon: protocol.icon || PROTOCOL_ICONS[0].value 
+    });
     setProtocolImage(null);
     setCurrentProtocolId(protocol._id);
     setIsEditingProtocol(true);
@@ -106,11 +119,16 @@ export default function ProtocolSectionAdmin() {
       setError('');
       setSuccess('');
       if (isEditingProtocol) {
-        if (!protocolImage) throw new Error('Please select an image to update');
-        const formData = new FormData();
-        formData.append('image', protocolImage);
-        await api.customPost(`/protocol-section/update-protocol/${docId}/${currentProtocolId}`, formData, true);
-        setSuccess('Protocol image updated (Note: Backend does not support updating text fields)');
+        // Update text
+        await api.customPut(`/protocol-section/update-protocol-text/${docId}/${currentProtocolId}`, protocolForm);
+        
+        // Update image if selected
+        if (protocolImage) {
+          const formData = new FormData();
+          formData.append('image', protocolImage);
+          await api.customPost(`/protocol-section/update-protocol/${docId}/${currentProtocolId}`, formData, true);
+        }
+        setSuccess('Protocol updated successfully');
       } else {
         if (!protocolImage) throw new Error('Image is required to add a protocol step');
         const formData = new FormData();
@@ -195,7 +213,7 @@ export default function ProtocolSectionAdmin() {
                   <td>{p.heading}</td>
                   <td>{p.desc}</td>
                   <td>
-                    <button className="admin-btn" style={{ marginRight: '10px' }} onClick={() => openEditProtocol(p)}>Edit Image</button>
+                    <button className="admin-btn" style={{ marginRight: '10px' }} onClick={() => openEditProtocol(p)}>Edit</button>
                     <button className="admin-btn" style={{ background: '#e74c3c' }} onClick={() => handleDeleteProtocol(p._id)}>Delete</button>
                   </td>
                 </tr>
@@ -213,31 +231,31 @@ export default function ProtocolSectionAdmin() {
       {showProtocolModal && (
         <div className="admin-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div className="admin-card" style={{ width: '500px' }}>
-            <h3>{isEditingProtocol ? 'Update Protocol Image' : 'Add Protocol'}</h3>
+            <h3>{isEditingProtocol ? 'Edit Protocol Step' : 'Add Protocol'}</h3>
             <form onSubmit={handleProtocolSubmit}>
-              {!isEditingProtocol && (
-                <>
-                  <div className="admin-form-group">
-                    <label>Heading</label>
-                    <input className="admin-form-control" value={protocolForm.heading} onChange={e => setProtocolForm({...protocolForm, heading: e.target.value})} required />
-                  </div>
-                  <div className="admin-form-group">
-                    <label>Description</label>
-                    <textarea className="admin-form-control" value={protocolForm.desc} onChange={e => setProtocolForm({...protocolForm, desc: e.target.value})} required />
-                  </div>
-                  <div className="admin-form-group">
-                    <label>Icon (Optional, FontAwesome class)</label>
-                    <input className="admin-form-control" value={protocolForm.icon} onChange={e => setProtocolForm({...protocolForm, icon: e.target.value})} />
-                  </div>
-                </>
-              )}
-              {isEditingProtocol && (
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
-                  Note: Backend API only allows updating the image for an existing protocol. To change text, delete and recreate the protocol.
-                </p>
-              )}
               <div className="admin-form-group">
-                <label>Image</label>
+                <label>Heading</label>
+                <input className="admin-form-control" value={protocolForm.heading} onChange={e => setProtocolForm({...protocolForm, heading: e.target.value})} required />
+              </div>
+              <div className="admin-form-group">
+                <label>Description</label>
+                <textarea className="admin-form-control" value={protocolForm.desc} onChange={e => setProtocolForm({...protocolForm, desc: e.target.value})} required />
+              </div>
+              <div className="admin-form-group">
+                <label>Icon <i className={protocolForm.icon} style={{ marginLeft: '10px', color: '#ff86c7' }} /></label>
+                <select 
+                  className="admin-form-control" 
+                  value={protocolForm.icon} 
+                  onChange={e => setProtocolForm({...protocolForm, icon: e.target.value})}
+                  required
+                >
+                  {PROTOCOL_ICONS.map(icon => (
+                    <option key={icon.value} value={icon.value}>{icon.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="admin-form-group">
+                <label>Image {isEditingProtocol ? '(Leave blank to keep existing)' : ''}</label>
                 <input type="file" className="admin-form-control" onChange={e => setProtocolImage(e.target.files[0])} accept="image/*" required={!isEditingProtocol} />
               </div>
               <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>

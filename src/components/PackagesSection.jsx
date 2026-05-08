@@ -45,32 +45,32 @@ export default function PackagesSection() {
               <div key={i} className={`package-card ${p.badge ? 'featured' : ''}`}>
                 {p.badge && <div className="package-tag tag-popular">{p.badge}</div>}
                 <div className="package-name">{p.heading}</div>
-                <div className="package-price">{p.price}</div>
+                <div className="package-price">
+                  {p.price.split('/').map((part, pi) => (
+                    pi === 0 ? part : <span key={pi}>/{part}</span>
+                  ))}
+                </div>
                 <p className="package-desc">{p.desc}</p>
                 <div className="package-line" />
 
-                {p.heading.toLowerCase().includes('complete') && (
+                {p.guaranteeTitle && (
                   <div className="guarantee-box">
-                    <div className="guarantee-title"><i className="fa-solid fa-shield-check" /> Full Refund Guarantee</div>
-                    <div className="guarantee-text">Minimum guarantee included — miss the agreed goals, get a full refund.</div>
+                    <div className="guarantee-title"><i className="fa-solid fa-shield-check" /> {p.guaranteeTitle}</div>
+                    <div className="guarantee-text">{p.guaranteeText}</div>
                   </div>
                 )}
 
                 {p.tag1 && <div className="highlight-text">{p.tag1}</div>}
                 <ul className="package-features">
-                  {(p.packData || []).map((feat, fi) => (
+                  {(p.points || []).map((feat, fi) => (
                     <li key={fi}><i className="fa-solid fa-check" />
-                      {feat.includes('<strong>') ? (
-                        <span dangerouslySetInnerHTML={{ __html: feat }} />
-                      ) : (
-                        feat
-                      )}
+                      <span dangerouslySetInnerHTML={{ __html: feat }} />
                     </li>
                   ))}
                 </ul>
                 {p.tag2 && (
                   <div className="highlight-text" style={{ marginTop: 'auto' }}>
-                    {p.tag2.split('\\n').map((l, idx) => <span key={idx}>{l}<br/></span>)}
+                    <span dangerouslySetInnerHTML={{ __html: p.tag2.replace(/\\n/g, '<br/>') }} />
                   </div>
                 )}
                 <a href={p.heading.toLowerCase().includes('mentorship') ? WA_MENTOR : WA_CREATOR} target="_blank" rel="noopener noreferrer" className={`package-btn ${p.badge ? 'btn-filled' : 'btn-outline'}`}>

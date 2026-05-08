@@ -114,7 +114,7 @@
 
 .img-wrap:hover {
   transform: translateY(-10px) !important;
-  border-color: rgba(255, 134, 199, 0.4) !important;
+  border-color: rgba(140, 134, 255, 0.4) !important;
 }
 
 .img-wrap img {
@@ -183,7 +183,7 @@
   font-size: 18px !important;
   text-decoration: none !important;
   border-radius: 60px !important;
-  box-shadow: 0 15px 45px rgba(37, 211, 102, 0.45) !important;
+  box-shadow: 0 15px 45px rgba(37, 69, 211, 0.45) !important;
   transition: all 0.4s ease !important;
   text-transform: uppercase !important;
   letter-spacing: 1px !important;
@@ -192,7 +192,7 @@
 
 .wa-btn:hover {
   transform: translateY(-5px) !important;
-  box-shadow: 0 25px 65px rgba(37, 211, 102, 0.65) !important;
+  box-shadow: 0 25px 65px rgba(40, 37, 211, 0.65) !important;
 }
 
 .contact-note {

@@ -15,11 +15,21 @@ const PARTICLES = [
 
 export default function ContactSection() {
   const [apiData, setApiData] = useState(null);
+  const [whatsappUrl, setWhatsappUrl] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
       const data = await api.getSectionData('contact-section');
       if (data) setApiData(data);
+
+      const heroData = await api.getSectionData('hero-section');
+      if (heroData && heroData.whatsappUrl) {
+        setWhatsappUrl(heroData.whatsappUrl);
+      }
+      if (heroData && heroData.whatsappNumber) {
+        setWhatsappNumber(heroData.whatsappNumber);
+      }
     };
     loadData();
   }, []);
@@ -83,11 +93,11 @@ export default function ContactSection() {
                 </>
               )}
             </p>
-            <a href={WA_URL} className="wa-btn" target="_blank" rel="noopener noreferrer">
+            <a href={whatsappUrl || WA_URL} className="wa-btn" target="_blank" rel="noopener noreferrer">
               <i className="fa-brands fa-whatsapp" /> Chat on WhatsApp
             </a>
             <div className="contact-note">
-              <i className="fa-brands fa-whatsapp" /> WhatsApp: <strong>+91 91280 06318</strong>
+              <i className="fa-brands fa-whatsapp" /> WhatsApp: <strong>{whatsappNumber || '+91 91280 06318'}</strong>
             </div>
           </div>
         </div>
