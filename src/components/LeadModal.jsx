@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import './LeadModal.css';
 
-const WA_URL = 'https://wa.me/919128006318?text=Hi%2C%20I%20would%20like%20to%20book%20a%20discovery%20call.';
+const WA_URL = 'https://wa.me/?text=Hi%2C%20I%20would%20like%20to%20book%20a%20discovery%20call.';
 
 export default function LeadModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,27 +11,34 @@ export default function LeadModal() {
   useEffect(() => {
     const loadData = async () => {
       const data = await api.getSectionData('hero-section');
-      if (data && data.whatsappUrl) {
-        setWhatsappUrl(data.whatsappUrl);
+      if (data) {
+        if (data.whatsappUrl) {
+          setWhatsappUrl(data.whatsappUrl);
+        } else if (data.whatsappNumber) {
+          // Construct wa.me URL from number if URL is not provided
+          const cleanNum = data.whatsappNumber.replace(/\D/g, '');
+          setWhatsappUrl(`https://wa.me/${cleanNum}?text=Hi%20I%20would%20like%20to%20book%20a%20discovery%20call.`);
+        }
       }
     };
     loadData();
   }, []);
 
   useEffect(() => {
-    const handleMouseLeave = (e) => {
-      if (e.clientY < 0 && !localStorage.getItem('modalDismissed')) {
+    const handleScroll = () => {
+      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPercent > 0.3 && !sessionStorage.getItem('fobet_lead_submitted')) {
         setIsOpen(true);
+        sessionStorage.setItem('fobet_lead_submitted', 'true');
       }
     };
 
-    document.addEventListener('mouseleave', handleMouseLeave);
-    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const closeModal = () => {
     setIsOpen(false);
-    localStorage.setItem('modalDismissed', 'true');
   };
 
   if (!isOpen) return null;
