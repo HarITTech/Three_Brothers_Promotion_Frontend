@@ -10,7 +10,7 @@
   font-family: var(--font-primary) !important;
   background: var(--bg-dark) !important;
   color: var(--text-white) !important;
-  padding: 120px 20px !important;
+  padding: 40px 20px !important;
   position: relative !important;
   overflow: hidden !important;
   width: 100% !important;
@@ -106,7 +106,7 @@
 .img-wrap {
   border-radius: 28px !important;
   overflow: hidden !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
   transition: transform 0.4s ease !important;
   position: relative !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -242,7 +242,7 @@
   }
 
   .img-wrap {
-    max-width: 500px !important;
+    max-width: 600px !important;
     margin: 0 auto !important;
   }
 }
