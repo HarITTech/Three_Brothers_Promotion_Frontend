@@ -131,8 +131,8 @@
 .contact-badge {
   display: inline-block !important;
   padding: 8px 24px !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(130, 132, 238, 0.1) !important;
+  border: 1px solid rgba(135, 130, 238, 0.3) !important;
   border-radius: 50px !important;
   font-size: 12px !important;
   color: var(--brand-pink-2) !important;

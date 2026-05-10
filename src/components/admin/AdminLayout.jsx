@@ -28,6 +28,7 @@ export default function AdminLayout() {
     { path: '/tbp-admin/faqs-section', label: 'FAQs Section' },
     { path: '/tbp-admin/clients-section', label: 'Clients Section' },
     { path: '/tbp-admin/contact-section', label: 'Contact Section' },
+    { path: '/tbp-admin/team-section', label: 'Team Section' },
   ];
 
   return (

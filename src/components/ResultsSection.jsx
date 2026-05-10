@@ -54,12 +54,12 @@ export default function ResultsSection() {
       <section className="results-section">
         <div className="bg-orb bg-orb-1" />
         <div className="bg-orb bg-orb-2" />
-        <i className="fa-solid fa-sparkles results-sparkle" />
-        <i className="fa-solid fa-sparkles results-sparkle" />
-        <i className="fa-solid fa-sparkles results-sparkle" />
-        <i className="fa-solid fa-sparkles results-sparkle" />
+        <i className="fa-solid fa-star sparkle" />
+        <i className="fa-solid fa-star sparkle" />
+        <i className="fa-solid fa-star sparkle" />
+        <i className="fa-solid fa-star sparkle" />
 
-        <div className="results-badge">{apiData?.resultTag || 'OUR RESULTS'}</div>
+        <div className="results-badge">{apiData?.resultTag || 'PROVEN RESULTS'}</div>
         <h2 className="results-title">
           {apiData?.heading1 ? (
             <>
@@ -67,12 +67,12 @@ export default function ResultsSection() {
             </>
           ) : (
             <>
-              Real Creators. <span className="gradient-text">Real Numbers.</span>
+              Client <span className="gradient-text">Transformation Results</span>
             </>
           )}
         </h2>
         <p className="results-subtext">
-          {apiData?.desc || "We don't promise — we prove. Here's what happens when strategy meets execution."}
+          {apiData?.desc || "We work with business owners, entrepreneurs and professionals"}
         </p>
 
         <div className="results-grid">

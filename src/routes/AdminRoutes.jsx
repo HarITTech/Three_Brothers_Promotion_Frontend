@@ -12,6 +12,7 @@ import PackagesSectionAdmin from '../pages/admin/PackagesSectionAdmin';
 import FaqsSectionAdmin from '../pages/admin/FaqsSectionAdmin';
 import ClientsSectionAdmin from '../pages/admin/ClientsSectionAdmin';
 import ContactSectionAdmin from '../pages/admin/ContactSectionAdmin';
+import TeamSectionAdmin from '../pages/admin/TeamSectionAdmin';
 
 export default function AdminRoutes() {
   return (
@@ -28,6 +29,7 @@ export default function AdminRoutes() {
         <Route path="/faqs-section" element={<FaqsSectionAdmin />} />
         <Route path="/clients-section" element={<ClientsSectionAdmin />} />
         <Route path="/contact-section" element={<ContactSectionAdmin />} />
+        <Route path="/team-section" element={<TeamSectionAdmin />} />
       </Route>
     </Routes>
   );

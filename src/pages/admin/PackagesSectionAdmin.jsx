@@ -20,8 +20,16 @@ export default function PackagesSectionAdmin() {
   const [isEditingPackage, setIsEditingPackage] = useState(false);
   const [currentPackageId, setCurrentPackageId] = useState(null);
   const [packageForm, setPackageForm] = useState({
-    heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: '', badge: '', features: '',
-    guaranteeTitle: '', guaranteeText: ''
+    heading: '',
+    price: '',
+    desc: '',
+    tag1: '',
+    tag2: '',
+    btnName: 'Get Started',
+    badge: '',
+    guaranteeTitle: '',
+    guaranteeText: '',
+    points: ''
   });
 
   useEffect(() => {
@@ -63,15 +71,7 @@ export default function PackagesSectionAdmin() {
       };
       
       const payload = cleanPayload(data);
-      // specific deletes for components that shouldn't send certain arrays in main submit
-      delete payload.teamMember;
-      delete payload.protocol;
       delete payload.packData;
-      delete payload.faqData;
-      delete payload.video;
-      delete payload.client;
-      delete payload.image;
-      delete payload.imagePublicId;
 
       if (docId) {
         await api.updateSectionData('packages-section', docId, payload);
@@ -88,28 +88,28 @@ export default function PackagesSectionAdmin() {
 
   const openAddPackage = () => {
     if (!docId) return alert('Please save the main section first!');
-    setPackageForm({ 
-      heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: '', badge: '', features: '',
-      guaranteeTitle: '', guaranteeText: ''
+    setPackageForm({
+      heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: 'Get Started',
+      badge: '', guaranteeTitle: '', guaranteeText: '', points: ''
     });
     setIsEditingPackage(false);
     setShowPackageModal(true);
   };
 
-  const openEditPackage = (pkg) => {
+  const openEditPackage = (p) => {
     setPackageForm({
-      heading: pkg.heading || '',
-      price: pkg.price || '',
-      desc: pkg.desc || '',
-      tag1: pkg.tag1 || '',
-      tag2: pkg.tag2 || '',
-      btnName: pkg.btnName || '',
-      badge: pkg.badge || '',
-      guaranteeTitle: pkg.guaranteeTitle || '',
-      guaranteeText: pkg.guaranteeText || '',
-      features: (pkg.points || []).join('\n')
+      heading: p.heading || '',
+      price: p.price || '',
+      desc: p.desc || '',
+      tag1: p.tag1 || '',
+      tag2: p.tag2 || '',
+      btnName: p.btnName || 'Get Started',
+      badge: p.badge || '',
+      guaranteeTitle: p.guaranteeTitle || '',
+      guaranteeText: p.guaranteeText || '',
+      points: (p.points || []).join('\n')
     });
-    setCurrentPackageId(pkg._id);
+    setCurrentPackageId(p._id);
     setIsEditingPackage(true);
     setShowPackageModal(true);
   };
@@ -119,7 +119,9 @@ export default function PackagesSectionAdmin() {
     try {
       setError('');
       setSuccess('');
-      const payload = {
+      
+      const pointsArray = packageForm.points.split('\n').filter(f => f.trim() !== '');
+      const payload = { 
         heading: packageForm.heading,
         price: packageForm.price,
         desc: packageForm.desc,
@@ -129,15 +131,15 @@ export default function PackagesSectionAdmin() {
         badge: packageForm.badge,
         guaranteeTitle: packageForm.guaranteeTitle,
         guaranteeText: packageForm.guaranteeText,
-        points: packageForm.features.split('\n').filter(s => s.trim() !== '')
+        points: pointsArray 
       };
 
       if (isEditingPackage) {
         await api.updateSectionData(`packages-section/${docId}`, currentPackageId, payload);
-        setSuccess('Package updated');
+        setSuccess('Package updated successfully');
       } else {
         await api.createSectionData(`packages-section/${docId}`, payload);
-        setSuccess('Package added');
+        setSuccess('Package added successfully');
       }
       setShowPackageModal(false);
       fetchData();
@@ -161,12 +163,16 @@ export default function PackagesSectionAdmin() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: '20px' }}>Packages Section Management</h2>
-      {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
-      {success && <p style={{ color: 'green', marginBottom: '10px' }}>{success}</p>}
+      <div className="admin-header">
+        <h1>Packages Section Management</h1>
+        <p>Manage your service packages, pricing, and features.</p>
+      </div>
+
+      {error && <div className="admin-alert admin-alert-error">{error}</div>}
+      {success && <div className="admin-alert admin-alert-success">{success}</div>}
 
       <div className="admin-card">
-        <h3>Main Content</h3>
+        <div className="admin-card-header">Main Content</div>
         <form onSubmit={handleMainSubmit}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
             <div className="admin-form-group">
@@ -186,15 +192,15 @@ export default function PackagesSectionAdmin() {
               <textarea className="admin-form-control" value={data.desc || ''} onChange={e => setData({...data, desc: e.target.value})} />
             </div>
           </div>
-          <button type="submit" className="admin-btn" style={{ marginTop: '15px' }}>Save Main Content</button>
+          <button type="submit" className="admin-btn">Save Main Content</button>
         </form>
       </div>
 
       {docId && (
-        <div className="admin-card" style={{ marginTop: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-            <h3>Packages</h3>
-            <button className="admin-btn" onClick={openAddPackage}>Add Package</button>
+        <div className="admin-card" style={{ marginTop: '30px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="admin-card-header" style={{ marginBottom: 0, borderBottom: 'none', paddingBottom: 0 }}>Service Packages</div>
+            <button className="admin-btn" onClick={openAddPackage}>+ Add Package</button>
           </div>
           
           <table className="admin-table">
@@ -213,24 +219,19 @@ export default function PackagesSectionAdmin() {
                   <td>{p.price}</td>
                   <td>{p.badge}</td>
                   <td>
-                    <button className="admin-btn" style={{ marginRight: '10px' }} onClick={() => openEditPackage(p)}>Edit</button>
-                    <button className="admin-btn" style={{ background: '#e74c3c' }} onClick={() => handleDeletePackage(p._id)}>Delete</button>
+                    <button className="admin-btn admin-btn-edit" style={{ marginRight: '10px' }} onClick={() => openEditPackage(p)}>Edit</button>
+                    <button className="admin-btn admin-btn-delete" onClick={() => handleDeletePackage(p._id)}>Delete</button>
                   </td>
                 </tr>
               ))}
-              {(!data.packData || data.packData.length === 0) && (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: 'center' }}>No packages found</td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
       )}
 
       {showPackageModal && (
-        <div className="admin-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="admin-card" style={{ width: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div className="admin-modal">
+          <div className="admin-modal-content" style={{ maxWidth: '800px' }}>
             <h3>{isEditingPackage ? 'Edit Package' : 'Add Package'}</h3>
             <form onSubmit={handlePackageSubmit}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
@@ -271,12 +272,12 @@ export default function PackagesSectionAdmin() {
                   <input className="admin-form-control" value={packageForm.guaranteeText} onChange={e => setPackageForm({...packageForm, guaranteeText: e.target.value})} />
                 </div>
                 <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-                  <label>Features (One per line, use &lt;strong&gt;Text&lt;/strong&gt; for bold)</label>
-                  <textarea className="admin-form-control" style={{ minHeight: '100px' }} value={packageForm.features} onChange={e => setPackageForm({...packageForm, features: e.target.value})} />
+                  <label>Features (One per line) use &lt;strong&gt;Text&lt;/strong&gt; for bold</label>
+                  <textarea className="admin-form-control" style={{ minHeight: '150px' }} value={packageForm.points} onChange={e => setPackageForm({...packageForm, points: e.target.value})} />
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                <button type="submit" className="admin-btn" style={{ flex: 1 }}>Save</button>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
+                <button type="submit" className="admin-btn" style={{ flex: 1 }}>Save Package</button>
                 <button type="button" className="admin-btn" style={{ flex: 1, background: '#95a5a6' }} onClick={() => setShowPackageModal(false)}>Cancel</button>
               </div>
             </form>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+                    <html lang="en">
+
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Two‑Day Section (Optimised Layout)</title>
+                        <!-- Icons and fonts -->
+                        <link rel="stylesheet"
+                            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+                        <link rel="preconnect" href="https://fonts.googleapis.com">
+                        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                        <link
+                            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+                            rel="stylesheet">
+                        <style>
+                            /* WRAPPER */
+                            .two-day-section {
+                                width: 100% !important;
+                                padding: 100px 30px !important;
+                                position: relative !important;
+                                background: #141B30 !important;
+                                /* Matches Hero */
+                                font-family: 'Space Grotesk', sans-serif !important;
+                                color: #ffffff !important;
+                                overflow: hidden !important;
+                                display: flex !important;
+                                flex-direction: column !important;
+                                justify-content: center !important;
+                                align-items: center !important;
+                                box-sizing: border-box !important;
+                            }
+
+                            /* Ambient Background Glows */
+                            .glow-spot {
+                                position: absolute !important;
+                                width: 600px !important;
+                                height: 600px !important;
+                                background: radial-gradient(circle, rgba(168, 85, 247, 0.15), transparent 70%) !important;
+                                border-radius: 50% !important;
+                                pointer-events: none !important;
+                                z-index: 0 !important;
+                            }
+
+                            .glow-left {
+                                top: -200px !important;
+                                left: -200px !important;
+                            }
+
+                            .glow-right {
+                                bottom: -200px !important;
+                                right: -200px !important;
+                                background: radial-gradient(circle, rgba(236, 72, 153, 0.15), transparent 70%) !important;
+                            }
+
+                            /* CONTAINER */
+                            .container {
+                                max-width: 1200px !important;
+                                width: 100% !important;
+                                display: flex !important;
+                                flex-direction: column !important;
+                                align-items: center !important;
+                                gap: 60px !important;
+                                z-index: 10 !important;
+                                position: relative !important;
+                            }
+
+                            /* TOP: TEXT CONTENT */
+                            .text-content {
+                                width: 100% !important;
+                                max-width: 800px !important;
+                                text-align: center !important;
+                                display: flex !important;
+                                flex-direction: column !important;
+                                align-items: center !important;
+                            }
+
+                            .text-content h2 {
+                                font-size: clamp(40px, 5vw, 60px) !important;
+                                font-weight: 700 !important;
+                                line-height: 1.1 !important;
+                                margin: 0 0 20px 0 !important;
+                                letter-spacing: -1px !important;
+                                color: #ffffff !important;
+                                font-family: 'Montserrat', sans-serif !important;
+                            }
+
+                            .highlight-box {
+                                display: inline-flex !important;
+                                align-items: center !important;
+                                gap: 10px !important;
+                                background: rgba(255, 255, 255, 0.1) !important;
+                                border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                                padding: 8px 20px !important;
+                                border-radius: 50px !important;
+                                font-size: 14px !important;
+                                font-weight: 600 !important;
+                                text-transform: uppercase !important;
+                                letter-spacing: 2px !important;
+                                margin-bottom: 24px !important;
+                                color: #ee82ee !important;
+                                backdrop-filter: blur(10px) !important;
+                            }
+
+                            .sub-heading {
+                                font-size: clamp(24px, 3vw, 32px) !important;
+                                font-weight: 300 !important;
+                                line-height: 1.4 !important;
+                                margin: 0 !important;
+                                color: #e2e8f0 !important;
+                                font-family: 'Space Grotesk', sans-serif !important;
+                            }
+
+                            .sub-heading strong {
+                                display: inline !important;
+                                /* Changed to inline for sentence flow */
+                                font-weight: 700 !important;
+                                background: linear-gradient(135deg, #ee82ee, #d946ef, #c026d3) !important;
+                                -webkit-background-clip: text !important;
+                                -webkit-text-fill-color: transparent !important;
+                            }
+
+                            /* BOTTOM: STATS DECK (Horizontal Layout) */
+                            .stats-deck {
+                                display: flex !important;
+                                flex-direction: row !important;
+                                align-items: center !important;
+                                justify-content: center !important;
+                                gap: 30px !important;
+                                width: 100% !important;
+                                flex-wrap: wrap !important;
+                            }
+
+                            /* Generic Card Base */
+                            .glass-card {
+                                background: rgba(20, 20, 30, 0.6) !important;
+                                backdrop-filter: blur(20px) !important;
+                                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                                border-radius: 24px !important;
+                                position: relative !important;
+                                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
+                                overflow: hidden !important;
+                            }
+
+                            /* 1. Side Cards (Revenue & Views) */
+                            .stat-card-side {
+                                width: 280px !important;
+                                padding: 25px !important;
+                                display: flex !important;
+                                flex-direction: column !important;
+                                justify-content: center !important;
+                                height: 160px !important;
+                                transition: transform 0.3s ease !important;
+                            }
+
+                            .stat-card-side:hover {
+                                transform: translateY(-10px) !important;
+                                background: rgba(255, 255, 255, 0.05) !important;
+                            }
+
+                            .stat-card-side.purple::before {
+                                content: '' !important;
+                                position: absolute !important;
+                                top: 0 !important;
+                                left: 0 !important;
+                                width: 100% !important;
+                                height: 3px !important;
+                                background: linear-gradient(90deg, transparent, #c084fc, transparent) !important;
+                                opacity: 0.8 !important;
+                            }
+
+                            .stat-card-side.blue::before {
+                                content: '' !important;
+                                position: absolute !important;
+                                top: 0 !important;
+                                left: 0 !important;
+                                width: 100% !important;
+                                height: 3px !important;
+                                background: linear-gradient(90deg, transparent, #22d3ee, transparent) !important;
+                                opacity: 0.8 !important;
+                            }
+
+                            /* 2. Center Card (Followers - Big Circle) */
+                            .stat-card-center {
+                                width: 320px !important;
+                                height: 220px !important;
+                                padding: 30px !important;
+                                display: flex !important;
+                                flex-direction: column !important;
+                                align-items: center !important;
+                                justify-content: center !important;
+                                z-index: 5 !important;
+                                background: rgba(255, 255, 255, 0.03) !important;
+                                border: 1px solid rgba(255, 255, 255, 0.15) !important;
+                            }
+
+                            /* Conic Gradient for the Ring */
+                            .progress-ring {
+                                width: 150px !important;
+                                height: 150px !important;
+                                border-radius: 50% !important;
+                                background: conic-gradient(#22d3ee 0deg,
+                                        #c084fc 180deg,
+                                        #e879f9 270deg,
+                                        transparent 270deg) !important;
+                                display: flex !important;
+                                align-items: center !important;
+                                justify-content: center !important;
+                                position: relative !important;
+                                box-shadow: 0 0 30px rgba(34, 211, 238, 0.2) !important;
+                                animation: spinRing 4s ease-out forwards !important;
+                            }
+
+                            @keyframes spinRing {
+                                from {
+                                    transform: rotate(-90deg);
+                                    opacity: 0;
+                                }
+
+                                to {
+                                    transform: rotate(0deg);
+                                    opacity: 1;
+                                }
+                            }
+
+                            /* Inner Black Circle */
+                            .progress-ring::after {
+                                content: '' !important;
+                                position: absolute !important;
+                                width: 130px !important;
+                                height: 130px !important;
+                                background: #141B30 !important;
+                                /* Match background */
+                                border-radius: 50% !important;
+                            }
+
+                            .stat-text-center {
+                                position: absolute !important;
+                                text-align: center !important;
+                                z-index: 2 !important;
+                                display: flex !important;
+                                flex-direction: column !important;
+                                align-items: center !important;
+                            }
+
+                            .stat-text-center h3 {
+                                font-size: 32px !important;
+                                font-weight: 700 !important;
+                                margin: 0 !important;
+                                color: #fff !important;
+                                line-height: 1 !important;
+                                font-family: 'Montserrat', sans-serif !important;
+                            }
+
+                            .stat-text-center p {
+                                font-size: 11px !important;
+                                color: #9ca3af !important;
+                                margin-top: 5px !important;
+                                text-transform: uppercase !important;
+                                letter-spacing: 1px !important;
+                                font-family: 'Space Grotesk', sans-serif !important;
+                            }
+
+                            /* Typography for Cards */
+                            .stat-value {
+                                font-size: 42px !important;
+                                font-weight: 700 !important;
+                                margin: 0 !important;
+                                color: #fff !important;
+                                line-height: 1 !important;
+                                font-family: 'Montserrat', sans-serif !important;
+                            }
+
+                            .stat-label {
+                                font-size: 13px !important;
+                                color: #9ca3af !important;
+                                margin-top: 8px !important;
+                                text-transform: uppercase !important;
+                                letter-spacing: 1px !important;
+                                font-family: 'Space Grotesk', sans-serif !important;
+                            }
+
+                            .icon-float {
+                                position: absolute !important;
+                                right: 25px !important;
+                                top: 50% !important;
+                                transform: translateY(-50%) !important;
+                                font-size: 28px !important;
+                                opacity: 0.8 !important;
+                            }
+
+                            /* Sparkline Graph Decoration (CSS Only) */
+                            .sparkline {
+                                position: absolute !important;
+                                right: 0 !important;
+                                top: 20px !important;
+                                width: 120px !important;
+                                height: 50px !important;
+                                opacity: 0.2 !important;
+                                pointer-events: none !important;
+                            }
+
+                            .sparkline path {
+                                fill: none !important;
+                                stroke-width: 2 !important;
+                            }
+
+                            /* RESPONSIVE */
+                            @media (max-width: 1024px) {
+                                .stats-deck {
+                                    gap: 20px !important;
+                                }
+
+                                .stat-card-side {
+                                    width: 220px !important;
+                                }
+                            }
+
+                            @media (max-width: 968px) {
+                                .two-day-section {
+                                    padding: 80px 20px !important;
+                                }
+
+                                .stats-deck {
+                                    flex-direction: column !important;
+                                    gap: 20px !important;
+                                }
+
+                                /* On mobile, put the circle first? or keep order? Let's keep order but stack. */
+                                /* Or maybe rearrange: Circle First, then others. */
+                                .stat-card-center {
+                                    order: -1 !important;
+                                }
+
+                                .stat-card-side,
+                                .stat-card-center {
+                                    width: 100% !important;
+                                    max-width: 400px !important;
+                                }
+
+                                .stat-card-center {
+                                    height: 200px !important;
+                                }
+
+                                .stat-card-side {
+                                    height: 140px !important;
+                                    flex-direction: row !important;
+                                    align-items: center !important;
+                                    justify-content: space-between !important;
+                                }
+
+                                .icon-float {
+                                    position: static !important;
+                                    transform: none !important;
+                                }
+
+                                .sparkline {
+                                    display: none !important;
+                                }
+
+                                /* Hide graph on mobile for cleaner look */
+                            }
+                        </style>
+                    </head>
+
+                    <body>
+
+                        <div class="two-day-section">
+                            <!-- Background Ambient Glows -->
+                            <div class="glow-spot glow-left"></div>
+                            <div class="glow-spot glow-right"></div>
+
+                            <div class="container">
+                                <!-- TOP: CENTERED TEXT -->
+                                <div class="text-content">
+                                    <div class="highlight-box">
+                                        <i class="fa-solid fa-rocket"></i> &nbsp; Done for you services
+                                    </div>
+                                    <h2>Just 2 Days In A Month</h2>
+                                    <h3 class="sub-heading">
+                                        for creating impactful personal brands
+                                    </h3>
+                                    <h3 class="sub-heading" style="margin-top: 15px !important;">
+                                        <strong>Generate Revenue, Increase Followers, Gain Massive Reach</strong>
+                                    </h3>
+                                </div>
+
+                                <!-- BOTTOM: STATS DECK (Replaces Dashboard) -->
+                                <div class="stats-deck">
+
+                                    <!-- Card 1: Revenue -->
+                                    <div class="glass-card stat-card-side purple">
+                                        <div>
+                                            <h4 class="stat-value">10M+</h4>
+                                            <p class="stat-label">Revenue Generated</p>
+                                        </div>
+                                        <i class="fa-solid fa-dollar-sign icon-float"
+                                            style="color: #fbbf24 !important;"></i>
+
+                                        <!-- SVG Graph Line -->
+                                        <svg class="sparkline" viewBox="0 0 100 40">
+                                            <path d="M0 30 Q 20 25 40 10 T 80 15 T 100 5" stroke="#c084fc" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- Card 2: Followers (Center Hero) -->
+                                    <div class="glass-card stat-card-center">
+                                        <div class="progress-ring">
+                                            <div class="stat-text-center">
+                                                <h3>50M+</h3>
+                                                <p>Followers</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 3: Views -->
+                                    <div class="glass-card stat-card-side blue">
+                                        <div>
+                                            <h4 class="stat-value">500M+</h4>
+                                            <p class="stat-label">Views Generated</p>
+                                        </div>
+                                        <i class="fa-solid fa-eye icon-float" style="color: #22d3ee !important;"></i>
+
+                                        <!-- SVG Graph Line -->
+                                        <svg class="sparkline" viewBox="0 0 100 40">
+                                            <path d="M0 35 Q 25 30 50 15 T 100 10" stroke="#22d3ee" />
+                                        </svg>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </body>
+
+                    </html>

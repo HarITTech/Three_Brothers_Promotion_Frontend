@@ -51,7 +51,7 @@
 
 .results-section {
     width: 100%;
-    padding: 100px 20px;
+    padding: 60px 20px;
     background: var(--bg-deep);
     font-family: var(--font-primary);
     color: var(--text-white);
@@ -87,7 +87,7 @@
     animation: floatOrb2 30s ease-in-out infinite;
 }
 
-.results-sparkle {
+.sparkle {
     position: absolute;
     font-size: 16px;
     color: rgba(137, 130, 238, 0.3);
@@ -95,27 +95,27 @@
     z-index: 0;
 }
 
-.results-sparkle:nth-child(1) {
+.sparkle:nth-child(1) {
     top: 15%;
     left: 10%;
     animation: sparkle 3s ease-in-out infinite;
 }
 
-.results-sparkle:nth-child(2) {
+.sparkle:nth-child(2) {
     top: 25%;
     right: 12%;
     animation: sparkle 3.5s ease-in-out infinite;
     animation-delay: 1s;
 }
 
-.results-sparkle:nth-child(3) {
+.sparkle:nth-child(3) {
     bottom: 20%;
     left: 8%;
     animation: sparkle 4s ease-in-out infinite;
     animation-delay: 2s;
 }
 
-.results-sparkle:nth-child(4) {
+.sparkle:nth-child(4) {
     bottom: 30%;
     right: 10%;
     animation: sparkle 3.8s ease-in-out infinite;
@@ -179,7 +179,7 @@
 
 .result-card {
     width: 100%;
-    height: auto;
+    aspect-ratio: 1/1;
     border-radius: 20px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.04);
@@ -203,13 +203,15 @@
 .result-static {
     position: relative;
     width: 100%;
+    height: 100%;
     overflow: hidden;
     line-height: 0;
 }
 
 .result-static-img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
     user-select: none;
 }
@@ -242,7 +244,7 @@
 }
 
 .many-more-text {
-    font-size: clamp(32px, 4vw, 48px);
+    font-size: clamp(28px, 3vw, 42px);
     font-weight: 800;
     color: var(--text-white);
     font-family: var(--font-heading);
@@ -258,7 +260,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-weight: 900;
+    font-weight: 800;
 }
 
 @media (max-width: 1400px) {
@@ -283,8 +285,8 @@
     }
 
     .card-tag {
-        font-size: 10px;
-        padding: 5px 14px;
+        font-size: 11px;
+        padding: 10px 16px;
         bottom: 12px;
     }
 }

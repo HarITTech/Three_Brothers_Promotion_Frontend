@@ -69,8 +69,8 @@
   display: inline-flex !important;
   align-items: center !important;
   gap: 10px !important;
-  background: rgba(255, 255, 255, 0.474) !important;
-  border: 1px solid rgba(255, 255, 255, 0.244) !important;
+  background: rgba(130, 132, 238, 0.1) !important;
+  border: 1px solid rgba(135, 130, 238, 0.3) !important;
   padding: 8px 20px !important;
   border-radius: 50px !important;
   font-size: 14px !important;
@@ -227,6 +227,7 @@
   margin-top: 5px !important;
   text-transform: uppercase !important;
   letter-spacing: 1px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
 }
 
 .stat-value {
@@ -235,7 +236,7 @@
   margin: 0 !important;
   color: var(--text-white) !important;
   line-height: 1 !important;
-  font-family: var(--font-heading) !important;
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 .stat-label {
@@ -244,6 +245,7 @@
   margin-top: 8px !important;
   text-transform: uppercase !important;
   letter-spacing: 1px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
 }
 
 .icon-float {
@@ -301,7 +303,7 @@
   }
 
   .stat-card-center {
-    height: 200px !important;
+    height: 210px !important;
   }
 
   .stat-card-side {

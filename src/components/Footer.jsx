@@ -1,5 +1,5 @@
 import './Footer.css';
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/logo1.png';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-inner">
         <a href="#home" className="footer-logo">
-          <img src={logo} alt="Fobet Media" />
+          <img src={logo} alt="Three Brothers Promotion" />
         </a>
         <div className="footer-links">
           <a href="#home">Home</a>
@@ -20,7 +20,10 @@ export default function Footer() {
           <a href="#team">Team</a>
         </div>
         <p className="footer-copy">
-          &copy; {currentYear} Fobet Media. All rights reserved.
+          &copy; {currentYear} Three Brothers Promotion. All rights reserved.
+        </p>
+        <p className="footer-credit">
+          created with 🧡 by <a href="https://harittech.vercel.app/" target="_blank" rel="noopener noreferrer" className="highlight-link">Harit Tech Solution</a>
         </p>
       </div>
     </footer>

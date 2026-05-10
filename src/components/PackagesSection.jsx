@@ -45,7 +45,7 @@ export default function PackagesSection() {
               <div key={i} className={`package-card ${p.badge ? 'featured' : ''}`}>
                 {p.badge && <div className="package-tag tag-popular">{p.badge}</div>}
                 <div className="package-name">{p.heading}</div>
-                <div className="package-price">
+                <div className="package-price">₹
                   {p.price.split('/').map((part, pi) => (
                     pi === 0 ? part : <span key={pi}>/{part}</span>
                   ))}

@@ -142,7 +142,7 @@
 .founder-card {
   width: 450px !important;
   min-height: 380px !important;
-  background: linear-gradient(180deg, rgba(222, 219, 240, 0.56) 0%, rgba(255, 255, 255, 0.252) 100%) !important;
+  background: linear-gradient(180deg, rgba(249, 249, 255, 0.289) 0%, rgba(244, 242, 255, 0.393) 100%) !important;
 }
 
 .avatar-wrapper {
@@ -183,7 +183,7 @@
   border: 4px solid var(--bg-dark) !important;
   position: relative !important;
   z-index: 2 !important;
-  background: #d8d8f17c !important;
+  background: #f7f5ffeb !important;
 }
 
 .role-badge {

@@ -42,7 +42,7 @@
   position: absolute !important;
   width: 800px !important;
   height: 800px !important;
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.1), transparent 70%) !important;
+  background: radial-gradient(circle, rgba(77, 72, 236, 0.1), transparent 70%) !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
@@ -70,8 +70,8 @@
 .testimonials-badge {
   display: inline-block !important;
   padding: 8px 24px !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(130, 132, 238, 0.1) !important;
+  border: 1px solid rgba(135, 130, 238, 0.3) !important;
   border-radius: 50px !important;
   font-size: 12px !important;
   color: var(--brand-pink-2) !important;
@@ -111,6 +111,7 @@
 .videos-grid {
   max-width: 1400px !important;
   margin: 0 auto !important;
+  /* padding-top: 20px !important; */
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
   gap: 30px !important;
@@ -147,8 +148,8 @@
   width: 45px !important;
   height: 45px !important;
   border-radius: 50% !important;
-  background: rgba(20, 27, 48, 0.9) !important;
-  border: 1px solid rgba(255, 134, 199, 0.4) !important;
+  background: rgba(148, 150, 208, 0.368) !important;
+  border: 1px solid rgba(107, 107, 230, 0.4) !important;
   color: var(--brand-pink-2) !important;
   font-size: 16px !important;
   display: flex !important;
@@ -173,19 +174,19 @@
 }
 
 .video-card {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(193, 188, 232, 0.284) !important;
+  border: 1px solid rgba(57, 49, 176, 0.305) !important;
   border-radius: 24px !important;
   padding: 12px !important;
   backdrop-filter: blur(10px) !important;
   transition: transform 0.3s ease, border-color 0.3s ease !important;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 15px 40px rgba(109, 109, 109, 0.268) !important;
 }
 
 .video-card:hover {
   transform: translateY(-10px) !important;
-  border-color: rgba(255, 134, 199, 0.4) !important;
-  box-shadow: 0 20px 50px rgba(255, 134, 199, 0.15) !important;
+  border-color: rgba(146, 134, 255, 0.4) !important;
+  box-shadow: 0 20px 50px rgba(140, 134, 255, 0.232) !important;
 }
 
 .video-wrapper {
@@ -194,28 +195,30 @@
   border-radius: 16px !important;
   overflow: hidden !important;
   position: relative !important;
-  background: #000 !important;
+  background: #00000000 !important;
 }
 
-.video-wrapper video {
+.video-wrapper video,
+.video-embed-frame {
   width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
+  height: 480px !important;
   display: block !important;
+  object-fit: cover !important;
+  border: none !important;
 }
 
 .video-handle {
   position: absolute !important;
   top: 15px !important;
   left: 15px !important;
-  background: rgba(0, 0, 0, 0.7) !important;
+  background: rgba(193, 188, 232, 0.753) !important;
+  border: 1px solid rgba(57, 49, 176, 0.392) !important;
   backdrop-filter: blur(10px) !important;
   padding: 8px 16px !important;
   border-radius: 20px !important;
   font-size: 14px !important;
   font-weight: 600 !important;
-  color: var(--text-white) !important;
-  border: 1px solid rgba(255, 134, 199, 0.3) !important;
+  color: rgb(98, 80, 193) !important;
   z-index: 10 !important;
   text-decoration: none !important;
   display: inline-block !important;
@@ -223,7 +226,7 @@
 }
 
 .video-handle:hover {
-  background: rgba(255, 134, 199, 0.3) !important;
+  background: rgba(174, 174, 199, 0.775) !important;
   border-color: var(--brand-pink-2) !important;
   transform: scale(1.05) !important;
 }
@@ -275,7 +278,7 @@
   }
 
   .mobile-slider-wrapper {
-    padding: 0 45px !important;
+    padding: 20px 0 45px 45px !important;
   }
 
   .video-card {

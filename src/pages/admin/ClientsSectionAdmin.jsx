@@ -61,15 +61,7 @@ export default function ClientsSectionAdmin() {
       };
       
       const payload = cleanPayload(data);
-      // specific deletes for components that shouldn't send certain arrays in main submit
-      delete payload.teamMember;
-      delete payload.protocol;
-      delete payload.packData;
-      delete payload.faqData;
       delete payload.video;
-      delete payload.client;
-      delete payload.image;
-      delete payload.imagePublicId;
 
       if (docId) {
         await api.updateSectionData('clients-section', docId, payload);
@@ -132,12 +124,16 @@ export default function ClientsSectionAdmin() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: '20px' }}>Clients Section Management</h2>
-      {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
-      {success && <p style={{ color: 'green', marginBottom: '10px' }}>{success}</p>}
+      <div className="admin-header">
+        <h1>Clients Section Management</h1>
+        <p>Manage your client video portfolio and headers.</p>
+      </div>
+
+      {error && <div className="admin-alert admin-alert-error">{error}</div>}
+      {success && <div className="admin-alert admin-alert-success">{success}</div>}
 
       <div className="admin-card">
-        <h3>Main Content</h3>
+        <div className="admin-card-header">Main Content</div>
         <form onSubmit={handleMainSubmit}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
             <div className="admin-form-group">
@@ -161,49 +157,62 @@ export default function ClientsSectionAdmin() {
               <textarea className="admin-form-control" value={data.desc || ''} onChange={e => setData({...data, desc: e.target.value})} />
             </div>
           </div>
-          <button type="submit" className="admin-btn" style={{ marginTop: '15px' }}>Save Main Content</button>
+          <button type="submit" className="admin-btn">Save Main Content</button>
         </form>
       </div>
 
       {docId && (
-        <div className="admin-card" style={{ marginTop: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-            <h3>Client Videos</h3>
-            <button className="admin-btn" onClick={openAddVideo}>Add Video</button>
+        <div className="admin-card" style={{ marginTop: '30px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="admin-card-header" style={{ marginBottom: 0, borderBottom: 'none', paddingBottom: 0 }}>Client Videos</div>
+            <button className="admin-btn" onClick={openAddVideo}>+ Add Video</button>
           </div>
           
           <table className="admin-table">
             <thead>
               <tr>
-                <th>YouTube/Vimeo Link</th>
+                <th>Preview</th>
+                <th>Video Link</th>
                 <th>Badge</th>
-                <th style={{ width: '180px' }}>Actions</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {(data.video || []).map(v => (
-                <tr key={v._id}>
-                  <td style={{ wordBreak: 'break-all' }}>{v.link}</td>
-                  <td>{v.badge}</td>
-                  <td>
-                    <button className="admin-btn" style={{ marginRight: '10px' }} onClick={() => openEditVideo(v)}>Edit</button>
-                    <button className="admin-btn" style={{ background: '#e74c3c' }} onClick={() => handleDeleteVideo(v._id)}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-              {(!data.video || data.video.length === 0) && (
-                <tr>
-                  <td colSpan="3" style={{ textAlign: 'center' }}>No client videos found</td>
-                </tr>
-              )}
+              {(data.video || []).map(v => {
+                const url = v.link || '';
+                let preview = null;
+                if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                  let id = '';
+                  if (url.includes('shorts/')) id = url.split('shorts/')[1]?.split('?')[0];
+                  else if (url.includes('v=')) id = url.split('v=')[1]?.split('&')[0];
+                  else if (url.includes('youtu.be/')) id = url.split('youtu.be/')[1]?.split('?')[0];
+                  preview = <img src={`https://img.youtube.com/vi/${id}/mqdefault.jpg`} alt="YT Preview" style={{ width: '80px', borderRadius: '4px' }} />;
+                } else if (url.includes('instagram.com')) {
+                  preview = <div style={{ fontSize: '20px' }}><i className="fa-brands fa-instagram"></i></div>;
+                } else {
+                  preview = <video src={url} style={{ width: '80px', borderRadius: '4px' }} />;
+                }
+
+                return (
+                  <tr key={v._id}>
+                    <td>{preview}</td>
+                    <td style={{ wordBreak: 'break-all' }}>{v.link}</td>
+                    <td>{v.badge}</td>
+                    <td>
+                      <button className="admin-btn admin-btn-edit" style={{ marginRight: '10px' }} onClick={() => openEditVideo(v)}>Edit</button>
+                      <button className="admin-btn admin-btn-delete" onClick={() => handleDeleteVideo(v._id)}>Delete</button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
 
       {showVideoModal && (
-        <div className="admin-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="admin-card" style={{ width: '500px' }}>
+        <div className="admin-modal">
+          <div className="admin-modal-content">
             <h3>{isEditingVideo ? 'Edit Client Video' : 'Add Client Video'}</h3>
             <form onSubmit={handleVideoSubmit}>
               <div className="admin-form-group">
@@ -214,7 +223,7 @@ export default function ClientsSectionAdmin() {
                 <label>Badge (Optional)</label>
                 <input className="admin-form-control" value={videoForm.badge} onChange={e => setVideoForm({...videoForm, badge: e.target.value})} />
               </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
                 <button type="submit" className="admin-btn" style={{ flex: 1 }}>Save</button>
                 <button type="button" className="admin-btn" style={{ flex: 1, background: '#95a5a6' }} onClick={() => setShowVideoModal(false)}>Cancel</button>
               </div>

@@ -12,15 +12,63 @@ const VIDEOS = [
   { src: '/src/assets/videos/7.mp4', handle: '@namastro.app', href: 'https://www.instagram.com/namastro.app' },
 ];
 
-function VideoCard({ src, handle, href }) {
+const getVideoType = (url) => {
+  if (!url) return { type: 'unknown' };
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    let id = '';
+    if (url.includes('shorts/')) {
+      id = url.split('shorts/')[1]?.split('?')[0];
+    } else if (url.includes('v=')) {
+      id = url.split('v=')[1]?.split('&')[0];
+    } else if (url.includes('youtu.be/')) {
+      id = url.split('youtu.be/')[1]?.split('?')[0];
+    }
+    return { type: 'youtube', embedUrl: `https://www.youtube.com/embed/${id}` };
+  }
+  if (url.includes('instagram.com')) {
+    const cleanUrl = url.split('?')[0].replace(/\/$/, '');
+    return { type: 'instagram', embedUrl: `${cleanUrl}/embed` };
+  }
+  return { type: 'direct' };
+};
+
+function VideoCard({ src, handle }) {
+  const videoInfo = getVideoType(src);
+  const isSocial = videoInfo.type === 'youtube' || videoInfo.type === 'instagram';
+
+  const handleBadgeClick = (e) => {
+    if (!isSocial) {
+      e.preventDefault(); // Stay here if not social
+    }
+  };
+
   return (
     <div className="video-card">
       <div className="video-wrapper">
-        <video controls preload="metadata">
-          <source src={src} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <a href={href} target="_blank" rel="noopener noreferrer" className="video-handle">{handle}</a>
+        {videoInfo.type === 'youtube' || videoInfo.type === 'instagram' ? (
+          <iframe
+            src={videoInfo.embedUrl}
+            className="video-embed-frame"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title={handle}
+          ></iframe>
+        ) : (
+          <video controls preload="metadata">
+            <source src={src} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+        <a 
+          href={src} 
+          target={isSocial ? "_blank" : "_self"} 
+          rel="noopener noreferrer" 
+          className="video-handle"
+          onClick={handleBadgeClick}
+        >
+          {handle}
+        </a>
       </div>
     </div>
   );

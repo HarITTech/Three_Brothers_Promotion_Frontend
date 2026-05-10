@@ -54,7 +54,7 @@ export default function Header() {
     <header className={`site-header${isScrolled ? ' scrolled' : ''}`}>
       <div className="header-container">
         <a href="#home" className="header-logo" onClick={closeMenu}>
-          <img src={logo} alt="Fobet Media" />
+          <img src={logo} alt="Three Brothers Promotions" />
         </a>
 
         <nav className={`main-nav${isMenuOpen ? ' active' : ''}`} id="mainNav">

@@ -48,7 +48,7 @@ export default function ContactSection() {
 
         <div className="contact-grid">
           <div className="img-wrap">
-            <img src={apiData?.image || contactImg} alt="Contact Fobet Media" decoding="async" />
+            <img src={apiData?.image || contactImg} alt="Contact Three Brothers Promotion" decoding="async" />
           </div>
 
           <div className="contact-text">

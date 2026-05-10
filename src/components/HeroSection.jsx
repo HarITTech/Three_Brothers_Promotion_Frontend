@@ -3,6 +3,7 @@ import { api } from '../services/api';
 import './HeroSection.css';
 import heroBg1 from '../assets/images/hero-bg-1.png';
 import heroBg2 from '../assets/images/hero-bg-2.png';
+import logoImg from '../assets/images/logo1.png';
 
 const WA_URL = 'https://wa.me/919128006318?text=Hi%2C%20I%20would%20like%20to%20book%20a%20discovery%20call.';
 
@@ -13,7 +14,10 @@ const FOUNDERS = [
     label: 'Founder',
     img: heroBg1,
     imgClass: 'founder-img riya',
-    cards: ['card-stats-riya', 'card-social-riya', 'card-views-riya'],
+    card1Heading: 'Mega Creator',
+    card1Text: '2.5M Followers',
+    card2Heading: '100M+',
+    card2Text: 'Views',
   },
   {
     key: 'vibhav',
@@ -21,7 +25,10 @@ const FOUNDERS = [
     label: 'Co-Founder',
     img: heroBg2,
     imgClass: 'founder-img vibhav',
-    cards: ['card-stats-vibhav', 'card-stats-vibhav-2', 'card-social-vibhav'],
+    card1Heading: 'Personal Branding Expert',
+    card1Text: '',
+    card2Heading: 'Scaled 70+ Clients to 7 Figures',
+    card2Text: '',
   },
 ];
 
@@ -41,18 +48,23 @@ export default function HeroSection() {
   }, []);
 
   const activeFounders = apiData?.teamMember?.length > 0
-    ? apiData.teamMember.map((m, i) => ({
-      key: m._id || `member-${i}`,
-      name: m.name,
-      label: m.role,
-      img: m.image,
-      imgClass: i === 0 ? 'founder-img riya' : 'founder-img vibhav',
-      cards: i === 0 ? ['card-stats-riya', 'card-social-riya', 'card-views-riya'] : ['card-stats-vibhav', 'card-stats-vibhav-2', 'card-social-vibhav'],
-      badge: m.badge,
-      instagramId: m.instagramId,
-      linkedInId: m.linkedInId,
-      desc: m.desc
-    }))
+    ? apiData.teamMember
+        .filter(m => !m.mainRole || m.mainRole === 'admin')
+        .map((m, i) => ({
+          key: m._id || `member-${i}`,
+          name: m.name,
+          label: m.role,
+          img: m.image,
+          imgClass: i === 0 ? 'founder-img riya' : 'founder-img vibhav',
+          badge: m.badge,
+          instagramId: m.instagramId,
+          linkedInId: m.linkedInId,
+          desc: m.desc,
+          card1Heading: m.card1Heading,
+          card1Text: m.card1Text,
+          card2Heading: m.card2Heading,
+          card2Text: m.card2Text,
+        }))
     : FOUNDERS;
 
   // Auto-slide
@@ -93,6 +105,8 @@ export default function HeroSection() {
     else if (dx > 50) goTo((current - 1 + activeFounders.length) % activeFounders.length);
   };
 
+  const currentMember = activeFounders[current];
+
   return (
     <div className="fobet-hero-wrapper" id="home">
       {/* Cursor light */}
@@ -102,9 +116,9 @@ export default function HeroSection() {
       <div className="noise-overlay" />
       <div className="particles" />
       <div className="bg-elements">
-        <i className="fa-solid fa-chart-line bg-icon icon-1" />
-        <i className="fa-solid fa-star bg-icon icon-3" />
-        <i className="fa-solid fa-bolt bg-icon icon-8" />
+        <i className="fa-solid fa-sparkles bg-icon icon-1" />
+        <i className="fa-solid fa-rocket bg-icon icon-3" />
+        <i className="fa-solid fa-heart bg-icon icon-8" />
       </div>
       <div className="gradient-orb orb-1" />
       <div className="gradient-orb orb-2" />
@@ -114,65 +128,75 @@ export default function HeroSection() {
           {/* ── Left content ── */}
           <div className="content-wrapper">
             <div className="logo-badge hero-fade-in delay-1">
-              <div className="logo-icon">TB</div>
-              <span className="logo-text">{apiData?.heroTag || 'Three Brothers Promotion'}</span>
+              <div className="logo-icon">
+                <img src={logoImg} alt="TB" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+              </div>
+              <span className="logo-text">{apiData?.heroTag || 'Three Brothers Promotions'}</span>
             </div>
 
-            <span className="hero-headline hero-fade-in delay-2">
+            <div className="hero-headline hero-fade-in delay-2">
               {apiData?.heroHeading1 ? (
                 <>
-                  {apiData.heroHeading1}{' '}
+                  {apiData.heroHeading1.split('\\n').map((line, i) => (
+                    <span key={i}>{line}{i === 0 && <br />}</span>
+                  ))}
+                  {' '}
                   {apiData.heroHeading2 && (
-                    <>
-                      <span className="gradient-text">Performance-Driven</span>{' '}
-                      Creator{' '}
-                      <span className="underline-wrapper">
-                        {apiData.heroHeading2}
-                        <svg className="svg-underline" viewBox="0 0 300 12" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M 5 10 Q 150 0 295 8" stroke="url(#heroGrad)" strokeWidth="3" fill="none" strokeLinecap="round" />
-                          <defs>
-                            <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#4d2cf0d4" />
-                              <stop offset="100%" stopColor="#4d2cf0d4" />
-                            </linearGradient>
-                          </defs>
-                        </svg>
-                      </span>{' '}
-                    </>
+                    <span className="gradient-text">{apiData.heroHeading2}</span>
+                  )}
+                  {' '}
+                  {apiData.heroHeading3 && (
+                    <span className="underline-wrapper">
+                      <span className="gradient-text">{apiData.heroHeading3}</span>
+                      <svg className="svg-underline" viewBox="0 0 200 9" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="underlineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#8b5cf6" />
+                            <stop offset="100%" stopColor="#6366f1" />
+                          </linearGradient>
+                        </defs>
+                        <path d="M2.00025 6.99997C25.7501 2.99991 74.8003 7.50002 99.0003 4.49997C124 1.50002 150.908 -0.999992 198.001 2.50001" stroke="url(#underlineGradient)" strokeWidth="3" strokeLinecap="round" />
+                      </svg>
+                    </span>
                   )}
                 </>
               ) : (
                 <>
-                  India's First{' '}
-                  <span className="gradient-text">Performance-Driven</span>{' '}
-                  Creator{' '}
+                  We make your business<br />
+                  <span className="gradient-text">impossible to</span>{' '}
                   <span className="underline-wrapper">
-                    Growth
-                    <svg className="svg-underline" viewBox="0 0 300 12" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M 5 10 Q 150 0 295 8" stroke="url(#heroGrad)" strokeWidth="3" fill="none" strokeLinecap="round" />
+                    <span className="gradient-text">ignore.</span>
+                    <svg className="svg-underline" viewBox="0 0 200 9" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                       <defs>
-                        <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#4d2cf0d4" />
-                          <stop offset="100%" stopColor="#4d2cf0d4" />
+                        <linearGradient id="underlineGradientDefault" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#8b5cf6" />
+                          <stop offset="100%" stopColor="#6366f1" />
                         </linearGradient>
                       </defs>
+                      <path d="M2.00025 6.99997C25.7501 2.99991 74.8003 7.50002 99.0003 4.49997C124 1.50002 150.908 -0.999992 198.001 2.50001" stroke="url(#underlineGradientDefault)" strokeWidth="3" strokeLinecap="round" />
                     </svg>
-                  </span>{' '}
+                  </span>
                 </>
               )}
-            </span>
+            </div>
 
-            <span className="hero-description hero-fade-in delay-3" style={{ display: 'block', marginBottom: '32px', marginTop: '0' }}>
-              {apiData?.heroDesc1 || 'We build authority, grow audiences, and engineer virality — so the most ambitious creators in India can scale without the guesswork.'}
-            </span>
+            <div className="hero-fade-in delay-3" style={{ marginBottom: '40px' }}>
+              <h1 className="hero-description" style={{ marginBottom: '8px' }}>
+                {apiData?.heroDesc1 || 'Done-for-you Personal Branding Agency that converts strangers into customers.'}
+              </h1>
+              {apiData?.heroDesc2 && (
+                <p className="hero-description" dangerouslySetInnerHTML={{ __html: apiData.heroDesc2 }} />
+              )}
+            </div>
 
             <div className="cta-wrapper hero-fade-in delay-4">
               <a href={apiData?.whatsappUrl || WA_URL} className="btn-primary" target="_blank" rel="noopener noreferrer">
-                <i className="fa-brands fa-whatsapp" />
-                Book Strategy Call
+                <span>Book Strategy Call</span>
+                <i className="fa-solid fa-arrow-right" />
               </a>
               <a href="#results" className="btn-secondary">
-                View Results <i className="fa-solid fa-arrow-down" />
+                <i className="fa-solid fa-play" />
+                <span>See Results</span>
               </a>
             </div>
           </div>
@@ -183,52 +207,62 @@ export default function HeroSection() {
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
-            {/* Float cards – Riya */}
-            {current === 0 && (
-              <>
-                <div className="float-card card-stats-riya" style={{ display: 'flex' }}>
-                  <div className="stat-icon"><i className="fa-solid fa-users" /></div>
-                  <div className="stat-content">
-                    <h4>{activeFounders[0]?.badge || apiData?.heroBadge1 || '50K+'}</h4>
-                    <p><i className="fa-solid fa-arrow-trend-up" /> {activeFounders[0]?.desc || 'Followers Grown'}</p>
-                  </div>
-                </div>
-                <div className="float-card card-social-riya" style={{ display: 'flex' }}>
-                  <div className="social-links">
-                    <a href={activeFounders[0]?.instagramId || 'https://www.instagram.com/riyaelity/'} target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fa-brands fa-instagram" /></a>
-                    <a href={activeFounders[0]?.linkedInId || 'https://www.linkedin.com/in/riya-upreti-213a04190/'} target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fa-brands fa-linkedin" /></a>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Float cards – Vibhav */}
-            {current === 1 && (
-              <>
-                <div className="float-card card-stats-vibhav" style={{ display: 'flex' }}>
-                  <div className="stat-icon"><i className="fa-solid fa-users" /></div>
-                  <div className="stat-content">
-                    <h4>{activeFounders[1]?.badge || apiData?.heroBadge2 || '100K+'}</h4>
-                    {/* <div className="stat-content-text">{activeFounders[1]?.desc ? activeFounders[1].desc.split('\\n').map((l, i) => <span key={i}>{l}<br /></span>) : <>Guaranteed Follower Growth<br />or Full Refund</>}</div> */}
-                    <p><i className="fa-solid fa-arrow-trend-up" /> {activeFounders[1]?.desc || 'Guaranteed Follower Growth'}</p>
-                  </div>
-                </div>
-                <div className="float-card card-social-vibhav" style={{ display: 'flex' }}>
-                  <div className="social-links">
-                    <a href={activeFounders[1]?.instagramId || 'https://www.instagram.com/fobet.media/'} target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fa-brands fa-instagram" /></a>
-                    <a href={activeFounders[1]?.linkedInId || 'https://www.linkedin.com/in/vibhav-raj-175622245/'} target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fa-brands fa-linkedin" /></a>
-                  </div>
-                </div>
-              </>
-            )}
-
             <div className="founder-stage-container">
-              <div className="founder-arch" />
               <div className="founder-glow" />
+              <div className="founder-arch" />
+
               <div className="founder-slider-wrapper">
                 {activeFounders.map((f, i) => (
                   <div key={f.key} className={`founder-slide${current === i ? ' active' : ''}`}>
-                    <img src={f.img} alt={f.name} className={f.imgClass} draggable={false} />
+                    <img src={f.img} alt={f.name} className={f.imgClass} draggable={false} loading="lazy" />
+
+                    {/* Dynamic Floating Cards per Founder */}
+                    {f.card1Heading && (
+                      <div className={`float-card ${i === 0 ? 'card-stats-riya' : 'card-stats-vibhav'}`}>
+                        {i === 0 ? (
+                          <div className="stat-icon"><i className="fa-solid fa-star" /></div>
+                        ) : null}
+                        <div className={i === 0 ? "stat-content" : "stat-content-text"}>
+                          {i === 0 ? (
+                            <>
+                              <h4>{f.card1Heading}</h4>
+                              <p>{f.card1Text}</p>
+                            </>
+                          ) : (
+                            <strong>{f.card1Heading}</strong>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {f.card2Heading && (
+                      <div className={`float-card ${i === 0 ? 'card-views-riya' : 'card-stats-vibhav-2'}`}>
+                        {i === 0 && (
+                          <div className="stat-icon stat-icon-green"><i className="fa-solid fa-eye" /></div>
+                        )}
+                        <div className={i === 0 ? "stat-content" : "stat-content-text"}>
+                          {i === 0 ? (
+                            <>
+                              <h4>{f.card2Heading}</h4>
+                              <p><i className="fa-solid fa-caret-up" /> {f.card2Text}</p>
+                            </>
+                          ) : (
+                            f.card2Heading
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className={`float-card ${i === 0 ? 'card-social-riya' : 'card-social-vibhav'}`}>
+                      <div className="social-links">
+                        {f.instagramId && (
+                          <a href={f.instagramId} target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fa-brands fa-instagram" /></a>
+                        )}
+                        {f.linkedInId && (
+                          <a href={f.linkedInId} target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fa-brands fa-linkedin" /></a>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -238,8 +272,8 @@ export default function HeroSection() {
             <div className="founder-info-container">
               {activeFounders.map((f, i) => (
                 <div key={f.key} className={`info-slide${current === i ? ' active' : ''}`}>
-                  <div className="founder-label">{f.label} · {apiData?.heroTag || 'Fobet Media'}</div>
-                  <div className="founder-name">{f.name}</div>
+                  <p className="founder-label">{f.label}</p>
+                  <h3 className="founder-name">{f.name}</h3>
                 </div>
               ))}
             </div>

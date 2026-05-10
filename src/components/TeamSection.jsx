@@ -46,6 +46,7 @@ export default function TeamSection() {
     loadData();
   }, []);
 
+  // Show ALL members (admins + team members) in the Team Section
   const teamMembers = apiData?.teamMember?.length > 0 ? apiData.teamMember.map(m => {
     const links = [];
     if (m.instagramId) {
@@ -68,10 +69,7 @@ export default function TeamSection() {
       alt: m.name,
       badges: badges,
       name: m.name,
-      bio: m.desc ? (
-        m.desc.includes('<span class="bio-highlight">') || m.desc.includes('<span className="bio-highlight">') ? 
-          <span dangerouslySetInnerHTML={{ __html: m.desc }} /> : m.desc
-      ) : '',
+      bio: m.desc || '',
       links: links
     };
   }) : FOUNDERS;
@@ -108,7 +106,7 @@ export default function TeamSection() {
                   ))}
                 </div>
                 <h3 className="member-name">{f.name}</h3>
-                <p className="member-bio">{f.bio}</p>
+                <p className="member-bio" dangerouslySetInnerHTML={{ __html: f.bio || '' }} />
                 <div className="social-links-team">
                   {f.links.map((l) => (
                     <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className={`social-btn ${l.cls}`}>
