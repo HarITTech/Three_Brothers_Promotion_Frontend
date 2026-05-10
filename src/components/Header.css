@@ -8,7 +8,7 @@
   left: 0;
   width: 100%;
   z-index: 999999;
-  background: rgba(232, 238, 255, 0.805);
+  background: rgba(232, 238, 255, 0.7); /* Reduced opacity for blur */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(211, 207, 255, 0.297);
@@ -192,7 +192,7 @@
     left: 0;
     width: 100%;
     height: calc(100vh - 69px);
-    background: rgba(240, 244, 255, 0.942);
+    background: rgba(240, 244, 255, 0.8); /* Reduced opacity for blur visibility */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     flex-direction: column;
