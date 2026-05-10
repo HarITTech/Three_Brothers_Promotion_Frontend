@@ -9,8 +9,8 @@
   width: 100%;
   z-index: 999999;
   background: rgba(232, 238, 255, 0.7); /* Reduced opacity for blur */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(211, 207, 255, 0.297);
   transition: all 0.3s ease;
 }
@@ -193,8 +193,8 @@
     width: 100%;
     height: calc(100vh - 69px);
     background: rgba(240, 244, 255, 0.8); /* Reduced opacity for blur visibility */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     flex-direction: column;
     justify-content: flex-start;
     padding: 40px 20px;
