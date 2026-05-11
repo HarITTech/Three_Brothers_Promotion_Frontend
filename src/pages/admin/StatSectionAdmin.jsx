@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import '../../admin.css';
+import Loader from '../../components/admin/Loader';
 
 export default function StatSectionAdmin() {
   const [data, setData] = useState({
@@ -16,6 +17,7 @@ export default function StatSectionAdmin() {
   });
   const [docId, setDocId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -38,6 +40,7 @@ export default function StatSectionAdmin() {
       }
     } catch (err) {
       console.error(err);
+      setError('Failed to load stat section data');
     } finally {
       setLoading(false);
     }
@@ -45,6 +48,7 @@ export default function StatSectionAdmin() {
 
   const handleMainSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       setError('');
       setSuccess('');
@@ -71,8 +75,11 @@ export default function StatSectionAdmin() {
         setDocId(res._id);
         setSuccess('Section created successfully');
       }
+      window.scrollTo(0, 0);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Update failed');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -86,60 +93,103 @@ export default function StatSectionAdmin() {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader fullPage={true} />;
 
   return (
-    <div>
+    <div className="admin-stat-management">
+      {submitting && <Loader fullPage={true} />}
+      
       <div className="admin-header">
-        <h1>Stat Section Management</h1>
-        <p>Manage the performance statistics and growth numbers.</p>
+        <h1>Stat Section</h1>
+        <p>Manage the performance statistics and growth numbers shown on your site.</p>
       </div>
 
-      {error && <div className="admin-alert admin-alert-error">{error}</div>}
-      {success && <div className="admin-alert admin-alert-success">{success}</div>}
+      {error && (
+        <div className="admin-alert admin-alert-error">
+          <i className="fa-solid fa-circle-exclamation"></i>
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="admin-alert admin-alert-success">
+          <i className="fa-solid fa-circle-check"></i>
+          {success}
+        </div>
+      )}
 
       <div className="admin-card">
-        <div className="admin-card-header">Main Content & Cards</div>
-        <form onSubmit={handleMainSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+        <div className="admin-card-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <i className="fa-solid fa-chart-line" style={{ color: 'var(--admin-primary)' }}></i>
+            <span>Main Content & Statistics</span>
+          </div>
+        </div>
+        <form onSubmit={handleMainSubmit} className="admin-card-body">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             <div className="admin-form-group">
-              <label>Stat Icon (FontAwesome class)</label>
+              <label>Section Tagline</label>
+              <input className="admin-form-control" value={data.statTag || ''} onChange={e => setData({...data, statTag: e.target.value})} placeholder="e.g. OUR IMPACT" />
+            </div>
+            <div className="admin-form-group">
+              <label>Section Icon (FontAwesome)</label>
               <input className="admin-form-control" value={data.statIcon || ''} onChange={e => setData({...data, statIcon: e.target.value})} placeholder="fa-solid fa-rocket" />
             </div>
+          </div>
+
+          <div className="admin-form-group">
+            <label>Main Headline</label>
+            <input className="admin-form-control" value={data.heading || ''} onChange={e => setData({...data, heading: e.target.value})} required />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             <div className="admin-form-group">
-              <label>Stat Tag (Badge text)</label>
-              <input className="admin-form-control" value={data.statTag || ''} onChange={e => setData({...data, statTag: e.target.value})} />
-            </div>
-            <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-              <label>Main Heading</label>
-              <input className="admin-form-control" value={data.heading || ''} onChange={e => setData({...data, heading: e.target.value})} required />
-            </div>
-            <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-              <label>Sub Heading 1 (Light text)</label>
+              <label>Secondary Headline Part 1 (Regular)</label>
               <input className="admin-form-control" value={data.subHeading1 || ''} onChange={e => setData({...data, subHeading1: e.target.value})} />
             </div>
-            <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-              <label>Sub Heading 2 (Gradient text)</label>
+            <div className="admin-form-group">
+              <label>Secondary Headline Part 2 (Gradient)</label>
               <input className="admin-form-control" value={data.subHeading2 || ''} onChange={e => setData({...data, subHeading2: e.target.value})} />
             </div>
+          </div>
 
-            {/* Cards */}
-            {['card2', 'card1', 'card3'].map((card) => (
-              <div key={card} style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', borderTop: '1px solid #edf2f7', paddingTop: '20px', marginTop: '10px' }}>
-                <h4 style={{ gridColumn: 'span 3', fontSize: '1.1rem', fontWeight: '600', color: '#2d3748' }}>
-                  {card === 'card2' ? 'Card 1 (Center Card - No Icon)' : card === 'card1' ? 'Card 2' : 'Card 3'}
-                </h4>
-                <div className="admin-form-group">
-                  <label>Value (e.g. 10M+)</label>
-                  <input className="admin-form-control" value={data[card].field1 || ''} onChange={e => handleCardChange(card, 'field1', e.target.value)} />
+          <div style={{ marginTop: '30px', marginBottom: '10px' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--admin-text-main)', marginBottom: '20px' }}>Statistics Cards</h3>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+            {['card2', 'card1', 'card3'].map((card, idx) => (
+              <div key={card} style={{ 
+                padding: '24px', 
+                borderRadius: '16px', 
+                backgroundColor: '#f8fafc', 
+                border: '1px solid var(--admin-border)',
+                position: 'relative'
+              }}>
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '-12px', 
+                  left: '20px', 
+                  background: 'var(--admin-primary)', 
+                  color: '#fff', 
+                  padding: '2px 12px', 
+                  borderRadius: '10px', 
+                  fontSize: '0.75rem', 
+                  fontWeight: '800' 
+                }}>
+                  CARD {idx + 1} {card === 'card2' ? '(MAIN)' : ''}
+                </div>
+                
+                <div className="admin-form-group" style={{ marginTop: '10px' }}>
+                  <label>Value</label>
+                  <input className="admin-form-control" value={data[card].field1 || ''} onChange={e => handleCardChange(card, 'field1', e.target.value)} placeholder="e.g. 100M+" />
                 </div>
                 <div className="admin-form-group">
-                  <label>Label (e.g. Revenue)</label>
-                  <input className="admin-form-control" value={data[card].field2 || ''} onChange={e => handleCardChange(card, 'field2', e.target.value)} />
+                  <label>Label</label>
+                  <input className="admin-form-control" value={data[card].field2 || ''} onChange={e => handleCardChange(card, 'field2', e.target.value)} placeholder="e.g. Organic Views" />
                 </div>
                 {card !== 'card2' && (
-                  <div className="admin-form-group">
-                    <label>Icon Class</label>
+                  <div className="admin-form-group" style={{ marginBottom: 0 }}>
+                    <label>Icon</label>
                     <input className="admin-form-control" value={data[card].field3 || ''} onChange={e => handleCardChange(card, 'field3', e.target.value)} placeholder="fa-solid fa-eye" />
                   </div>
                 )}
@@ -147,7 +197,12 @@ export default function StatSectionAdmin() {
             ))}
           </div>
 
-          <button type="submit" className="admin-btn" style={{ marginTop: '20px' }}>Save Stat Section</button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '40px' }}>
+            <button type="submit" className="admin-btn">
+              <i className="fa-solid fa-floppy-disk"></i>
+              Save Stat Section
+            </button>
+          </div>
         </form>
       </div>
     </div>

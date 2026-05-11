@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import '../../admin.css';
+import Loader from '../../components/admin/Loader';
 
 export default function PackagesSectionAdmin() {
   const [data, setData] = useState({
@@ -12,6 +13,7 @@ export default function PackagesSectionAdmin() {
   });
   const [docId, setDocId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -31,6 +33,7 @@ export default function PackagesSectionAdmin() {
     guaranteeText: '',
     points: ''
   });
+  const [modalError, setModalError] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -46,6 +49,7 @@ export default function PackagesSectionAdmin() {
       }
     } catch (err) {
       console.error(err);
+      setError('Failed to fetch packages section data');
     } finally {
       setLoading(false);
     }
@@ -53,6 +57,7 @@ export default function PackagesSectionAdmin() {
 
   const handleMainSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       setError('');
       setSuccess('');
@@ -75,14 +80,17 @@ export default function PackagesSectionAdmin() {
 
       if (docId) {
         await api.updateSectionData('packages-section', docId, payload);
-        setSuccess('Section updated successfully');
+        setSuccess('Packages section updated successfully');
       } else {
         const res = await api.createSectionData('packages-section', payload);
         setDocId(res._id);
-        setSuccess('Section created successfully');
+        setSuccess('Packages section created successfully');
       }
+      window.scrollTo(0, 0);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to update section');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -92,6 +100,7 @@ export default function PackagesSectionAdmin() {
       heading: '', price: '', desc: '', tag1: '', tag2: '', btnName: 'Get Started',
       badge: '', guaranteeTitle: '', guaranteeText: '', points: ''
     });
+    setModalError('');
     setIsEditingPackage(false);
     setShowPackageModal(true);
   };
@@ -109,6 +118,7 @@ export default function PackagesSectionAdmin() {
       guaranteeText: p.guaranteeText || '',
       points: (p.points || []).join('\n')
     });
+    setModalError('');
     setCurrentPackageId(p._id);
     setIsEditingPackage(true);
     setShowPackageModal(true);
@@ -116,10 +126,9 @@ export default function PackagesSectionAdmin() {
 
   const handlePackageSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
+    setModalError('');
     try {
-      setError('');
-      setSuccess('');
-      
       const pointsArray = packageForm.points.split('\n').filter(f => f.trim() !== '');
       const payload = { 
         heading: packageForm.heading,
@@ -143,142 +152,239 @@ export default function PackagesSectionAdmin() {
       }
       setShowPackageModal(false);
       fetchData();
+      window.scrollTo(0, 0);
     } catch (err) {
-      setError(err.message);
+      setModalError(err.message || 'Failed to save package');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleDeletePackage = async (packageId) => {
     if (!window.confirm('Are you sure you want to delete this package?')) return;
+    setSubmitting(true);
     try {
       await api.deleteSectionData(`packages-section/${docId}`, packageId);
-      setSuccess('Package deleted');
+      setSuccess('Package deleted successfully');
       fetchData();
+      window.scrollTo(0, 0);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to delete package');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader fullPage={true} />;
 
   return (
-    <div>
+    <div className="admin-packages-management">
+      {submitting && <Loader fullPage={true} />}
+      
       <div className="admin-header">
-        <h1>Packages Section Management</h1>
-        <p>Manage your service packages, pricing, and features.</p>
+        <h1>Service Packages</h1>
+        <p>Manage your elite service offerings, tiered pricing, and exclusive features.</p>
       </div>
 
-      {error && <div className="admin-alert admin-alert-error">{error}</div>}
-      {success && <div className="admin-alert admin-alert-success">{success}</div>}
-
-      <div className="admin-card">
-        <div className="admin-card-header">Main Content</div>
-        <form onSubmit={handleMainSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-            <div className="admin-form-group">
-              <label>Pack Tag</label>
-              <input className="admin-form-control" value={data.packTag || ''} onChange={e => setData({...data, packTag: e.target.value})} required />
-            </div>
-            <div className="admin-form-group">
-              <label>Heading 1</label>
-              <input className="admin-form-control" value={data.heading1 || ''} onChange={e => setData({...data, heading1: e.target.value})} required />
-            </div>
-            <div className="admin-form-group">
-              <label>Heading 2 (Optional)</label>
-              <input className="admin-form-control" value={data.heading2 || ''} onChange={e => setData({...data, heading2: e.target.value})} />
-            </div>
-            <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-              <label>Description (Optional)</label>
-              <textarea className="admin-form-control" value={data.desc || ''} onChange={e => setData({...data, desc: e.target.value})} />
-            </div>
-          </div>
-          <button type="submit" className="admin-btn">Save Main Content</button>
-        </form>
-      </div>
-
-      {docId && (
-        <div className="admin-card" style={{ marginTop: '30px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <div className="admin-card-header" style={{ marginBottom: 0, borderBottom: 'none', paddingBottom: 0 }}>Service Packages</div>
-            <button className="admin-btn" onClick={openAddPackage}>+ Add Package</button>
-          </div>
-          
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Heading</th>
-                <th>Price</th>
-                <th>Badge</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(data.packData || []).map(p => (
-                <tr key={p._id}>
-                  <td>{p.heading}</td>
-                  <td>{p.price}</td>
-                  <td>{p.badge}</td>
-                  <td>
-                    <button className="admin-btn admin-btn-edit" style={{ marginRight: '10px' }} onClick={() => openEditPackage(p)}>Edit</button>
-                    <button className="admin-btn admin-btn-delete" onClick={() => handleDeletePackage(p._id)}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {error && (
+        <div className="admin-alert admin-alert-error">
+          <i className="fa-solid fa-circle-exclamation"></i>
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="admin-alert admin-alert-success">
+          <i className="fa-solid fa-circle-check"></i>
+          {success}
         </div>
       )}
 
+      <div className="admin-card">
+        <div className="admin-card-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <i className="fa-solid fa-boxes-stacked" style={{ color: 'var(--admin-primary)' }}></i>
+            <span>Main Content</span>
+          </div>
+        </div>
+        <form onSubmit={handleMainSubmit} className="admin-card-body">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div className="admin-form-group">
+              <label>Section Tagline</label>
+              <input className="admin-form-control" placeholder="e.g. PACKAGES" value={data.packTag || ''} onChange={e => setData({...data, packTag: e.target.value})} required />
+            </div>
+            <div className="admin-form-group">
+              <label>Headline Part 1</label>
+              <input className="admin-form-control" placeholder="e.g. Choose Your" value={data.heading1 || ''} onChange={e => setData({...data, heading1: e.target.value})} required />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
+            <div className="admin-form-group">
+              <label>Headline Part 2 (Gradient Highlight)</label>
+              <input className="admin-form-control" placeholder="e.g. Level of Impact" value={data.heading2 || ''} onChange={e => setData({...data, heading2: e.target.value})} />
+            </div>
+          </div>
+          <div className="admin-form-group">
+            <label>Section Description</label>
+            <textarea className="admin-form-control" rows="3" placeholder="Overview of the pricing tiers..." value={data.desc || ''} onChange={e => setData({...data, desc: e.target.value})} />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button type="submit" className="admin-btn">
+              <i className="fa-solid fa-floppy-disk"></i>
+              Save Section Content
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="admin-card">
+        <div className="admin-card-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <i className="fa-solid fa-tags" style={{ color: 'var(--admin-primary)' }}></i>
+            <span>Pricing Tiers</span>
+          </div>
+          <button className="admin-btn" onClick={openAddPackage}>
+            <i className="fa-solid fa-plus"></i>
+            Add New Package
+          </button>
+        </div>
+        <div className="admin-card-body" style={{ padding: 0 }}>
+          <div className="admin-table-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Package Name</th>
+                  <th>Price Point</th>
+                  <th>Badge</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(data.packData || []).length === 0 ? (
+                  <tr>
+                    <td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: 'var(--admin-text-sub)' }}>
+                      No packages found. Define your first tier to show it on the site.
+                    </td>
+                  </tr>
+                ) : (
+                  (data.packData || []).map(p => (
+                    <tr key={p._id}>
+                      <td><span style={{ fontWeight: '700' }}>{p.heading}</span></td>
+                      <td><span style={{ color: 'var(--admin-primary)', fontWeight: '700' }}>{p.price}</span></td>
+                      <td>
+                        {p.badge ? (
+                          <span style={{ 
+                            padding: '4px 10px', 
+                            background: 'linear-gradient(135deg, #f59e0b, #d97706)', 
+                            borderRadius: '20px', 
+                            fontSize: '10px', 
+                            fontWeight: '800', 
+                            color: '#fff',
+                            textTransform: 'uppercase'
+                          }}>
+                            {p.badge}
+                          </span>
+                        ) : '—'}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                          <button className="admin-btn admin-btn-secondary" style={{ padding: '8px 12px' }} onClick={() => openEditPackage(p)}>
+                            <i className="fa-solid fa-pen"></i>
+                          </button>
+                          <button className="admin-btn admin-btn-delete" style={{ padding: '8px 12px' }} onClick={() => handleDeletePackage(p._id)}>
+                            <i className="fa-solid fa-trash-can"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       {showPackageModal && (
         <div className="admin-modal">
-          <div className="admin-modal-content" style={{ maxWidth: '800px' }}>
-            <h3>{isEditingPackage ? 'Edit Package' : 'Add Package'}</h3>
-            <form onSubmit={handlePackageSubmit}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+          <div className="admin-modal-content" style={{ maxWidth: '900px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', padding: '30px 40px 0' }}>
+              <h3 style={{ margin: 0, padding: 0 }}>{isEditingPackage ? 'Edit Package Tier' : 'Add New Tier'}</h3>
+              <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'var(--admin-text-sub)' }} onClick={() => setShowPackageModal(false)}></i>
+            </div>
+            
+            {modalError && (
+              <div className="admin-alert admin-alert-error" style={{ margin: '0 40px 20px' }}>
+                <i className="fa-solid fa-circle-exclamation"></i>
+                {modalError}
+              </div>
+            )}
+
+            <form onSubmit={handlePackageSubmit} style={{ padding: '0 40px 40px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="admin-form-group">
-                  <label>Heading</label>
-                  <input className="admin-form-control" value={packageForm.heading} onChange={e => setPackageForm({...packageForm, heading: e.target.value})} required />
+                  <label>Package Title</label>
+                  <input className="admin-form-control" placeholder="e.g. Elite Growth" value={packageForm.heading} onChange={e => setPackageForm({...packageForm, heading: e.target.value})} required />
                 </div>
                 <div className="admin-form-group">
-                  <label>Price</label>
-                  <input className="admin-form-control" value={packageForm.price} onChange={e => setPackageForm({...packageForm, price: e.target.value})} required />
+                  <label>Pricing Display</label>
+                  <input className="admin-form-control" placeholder="e.g. $2,000/mo" value={packageForm.price} onChange={e => setPackageForm({...packageForm, price: e.target.value})} required />
                 </div>
-                <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-                  <label>Description</label>
-                  <input className="admin-form-control" value={packageForm.desc} onChange={e => setPackageForm({...packageForm, desc: e.target.value})} />
-                </div>
+              </div>
+
+              <div className="admin-form-group">
+                <label>Package Description</label>
+                <input className="admin-form-control" placeholder="Brief tagline for this tier..." value={packageForm.desc} onChange={e => setPackageForm({...packageForm, desc: e.target.value})} />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="admin-form-group">
-                  <label>Tag 1 (e.g. 'with Vibhav Raj')</label>
+                  <label>Top Tag (e.g. 'with Vibhav Raj')</label>
                   <input className="admin-form-control" value={packageForm.tag1} onChange={e => setPackageForm({...packageForm, tag1: e.target.value})} />
                 </div>
                 <div className="admin-form-group">
-                  <label>Tag 2 (Footer text)</label>
+                  <label>Bottom Tag (e.g. 'Customized Strategy')</label>
                   <input className="admin-form-control" value={packageForm.tag2} onChange={e => setPackageForm({...packageForm, tag2: e.target.value})} />
                 </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="admin-form-group">
-                  <label>Button Name</label>
-                  <input className="admin-form-control" value={packageForm.btnName} onChange={e => setPackageForm({...packageForm, btnName: e.target.value})} required />
+                  <label>CTA Button Text</label>
+                  <input className="admin-form-control" placeholder="Get Started" value={packageForm.btnName} onChange={e => setPackageForm({...packageForm, btnName: e.target.value})} required />
                 </div>
                 <div className="admin-form-group">
-                  <label>Badge (e.g. 'Most Popular')</label>
-                  <input className="admin-form-control" value={packageForm.badge} onChange={e => setPackageForm({...packageForm, badge: e.target.value})} />
-                </div>
-                <div className="admin-form-group">
-                  <label>Guarantee Title</label>
-                  <input className="admin-form-control" value={packageForm.guaranteeTitle} onChange={e => setPackageForm({...packageForm, guaranteeTitle: e.target.value})} />
-                </div>
-                <div className="admin-form-group">
-                  <label>Guarantee Text</label>
-                  <input className="admin-form-control" value={packageForm.guaranteeText} onChange={e => setPackageForm({...packageForm, guaranteeText: e.target.value})} />
-                </div>
-                <div className="admin-form-group" style={{ gridColumn: 'span 2' }}>
-                  <label>Features (One per line) use &lt;strong&gt;Text&lt;/strong&gt; for bold</label>
-                  <textarea className="admin-form-control" style={{ minHeight: '150px' }} value={packageForm.points} onChange={e => setPackageForm({...packageForm, points: e.target.value})} />
+                  <label>Special Badge (e.g. MOST POPULAR)</label>
+                  <input className="admin-form-control" placeholder="Leave empty for none" value={packageForm.badge} onChange={e => setPackageForm({...packageForm, badge: e.target.value})} />
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
-                <button type="submit" className="admin-btn" style={{ flex: 1 }}>Save Package</button>
-                <button type="button" className="admin-btn" style={{ flex: 1, background: '#95a5a6' }} onClick={() => setShowPackageModal(false)}>Cancel</button>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', padding: '15px', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px solid var(--admin-border)', marginBottom: '20px' }}>
+                <div className="admin-form-group" style={{ marginBottom: 0 }}>
+                  <label>Guarantee Label</label>
+                  <input className="admin-form-control" placeholder="e.g. Result Guarantee" value={packageForm.guaranteeTitle} onChange={e => setPackageForm({...packageForm, guaranteeTitle: e.target.value})} />
+                </div>
+                <div className="admin-form-group" style={{ marginBottom: 0 }}>
+                  <label>Guarantee Subtext</label>
+                  <input className="admin-form-control" placeholder="e.g. or we work for free" value={packageForm.guaranteeText} onChange={e => setPackageForm({...packageForm, guaranteeText: e.target.value})} />
+                </div>
+              </div>
+
+              <div className="admin-form-group">
+                <label>Key Features & Benefits (One per line)</label>
+                <p style={{ fontSize: '11px', color: 'var(--admin-text-sub)', marginTop: '-8px', marginBottom: '8px' }}>
+                  Use <code>&lt;strong&gt;Text&lt;/strong&gt;</code> for bold emphasis.
+                </p>
+                <textarea className="admin-form-control" style={{ minHeight: '180px', fontFamily: 'monospace', fontSize: '0.9rem' }} placeholder="Feature 1&#10;Feature 2&#10;..." value={packageForm.points} onChange={e => setPackageForm({...packageForm, points: e.target.value})} />
+              </div>
+
+              <div style={{ display: 'flex', gap: '15px', marginTop: '40px' }}>
+                <button type="submit" className="admin-btn" style={{ flex: 1, height: '48px' }}>
+                  <i className="fa-solid fa-check"></i>
+                  {isEditingPackage ? 'Update Package' : 'Create Package'}
+                </button>
+                <button type="button" className="admin-btn admin-btn-secondary" style={{ flex: 1, height: '48px' }} onClick={() => setShowPackageModal(false)}>
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
