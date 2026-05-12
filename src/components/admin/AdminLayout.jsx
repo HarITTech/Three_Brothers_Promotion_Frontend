@@ -1,10 +1,11 @@
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
 import '../../admin.css';
 
 export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -12,6 +13,11 @@ export default function AdminLayout() {
       navigate('/tbp-admin/login');
     }
   }, [navigate]);
+
+  // Close sidebar on location change (for mobile)
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -32,8 +38,23 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="admin-container">
-      <aside className="admin-sidebar">
+    <div className={`admin-container ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}>
+      {/* Mobile Top Bar */}
+      <div className="admin-mobile-topbar">
+        <div className="admin-mobile-logo">
+          <span>TBP</span> Admin
+        </div>
+        <button className="admin-mobile-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+        </button>
+      </div>
+
+      {/* Sidebar Overlay */}
+      {isMobileMenuOpen && (
+        <div className="admin-sidebar-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>
+      )}
+
+      <aside className={`admin-sidebar ${isMobileMenuOpen ? 'show' : ''}`}>
         <div className="admin-sidebar-header">
           <span>TBP</span> Admin
         </div>
