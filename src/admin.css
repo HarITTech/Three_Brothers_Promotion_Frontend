@@ -445,9 +445,7 @@ textarea.admin-form-control {
   backdrop-filter: blur(4px);
   z-index: 1999;
   animation: fadeIn 0.2s ease-out;
-}
-
-@media (max-width: 992px) {
+}@media (max-width: 992px) {
   .admin-container {
     display: block;
   }
@@ -487,12 +485,29 @@ textarea.admin-form-control {
     font-size: 1rem;
   }
 
-  /* Dashboard Grid Adjustments */
+  /* Dashboard Specific Mobile Fixes */
+  .admin-dashboard .admin-header > div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px;
+  }
+
+  .admin-dashboard .admin-header div[style*="textAlign: right"] {
+    text-align: left !important;
+  }
+
   .admin-dashboard .admin-card-body {
     padding: 20px;
   }
 
-  .admin-dashboard > div[style*="gridTemplateColumns: 2fr 1fr"] {
+  /* Force stack for the 2-column layout (Overview + Health) */
+  .admin-dashboard > div[style*="display: grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* Force stack for Quick Actions grid */
+  .admin-dashboard .admin-card-body div[style*="gridTemplateColumns: 1fr 1fr"] {
     grid-template-columns: 1fr !important;
   }
 }
@@ -559,15 +574,15 @@ textarea.admin-form-control {
 
   /* Table overflow */
   .admin-table-container {
-    margin: 0 -20px;
+    margin: 0 -10px;
     border-radius: 0;
     border-left: none;
     border-right: none;
   }
 
   .admin-table th, .admin-table td {
-    padding: 12px 16px;
-    font-size: 0.85rem;
+    padding: 12px 10px;
+    font-size: 0.8rem;
   }
 
   /* Fix for stacked buttons in tables/cards */
