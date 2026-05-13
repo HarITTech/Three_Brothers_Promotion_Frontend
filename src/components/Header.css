@@ -40,10 +40,21 @@
   z-index: 1000000;
 }
 
-.header-logo img {
-  height: 60px;
+.logo-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+.header-logo .logo-img {
+  height: 45px;
   width: auto;
   transition: transform 0.3s ease;
+}
+
+.header-logo .logo-img1{
+  height: 35px;
 }
 
 .header-logo:hover img {

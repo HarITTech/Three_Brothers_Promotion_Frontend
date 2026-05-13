@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Header.css';
 import logo from '../assets/images/logo.png';
+import logo1 from '../assets/images/logo_text.png';
 
 const NAV_LINKS = [
   { label: 'Home', href: '#home' },
@@ -54,7 +55,11 @@ export default function Header() {
     <header className={`site-header${isScrolled ? ' scrolled' : ''}`}>
       <div className="header-container">
         <a href="#home" className="header-logo" onClick={closeMenu}>
-          <img src={logo} alt="Three Brothers Promotions" />
+          <div className='logo-div'>
+            <img className="logo-img" src={logo} alt="TB" />
+            <img className="logo-img1" src={logo1} alt="Three Brothers Promotions" />
+          </div>
+          
         </a>
 
         <nav className={`main-nav${isMenuOpen ? ' active' : ''}`} id="mainNav">
