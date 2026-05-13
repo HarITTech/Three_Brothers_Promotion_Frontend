@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { api } from '../services/api';
+import Skeleton from './Skeleton';
 import './ProtocolSection.css';
 
 import p1 from '../assets/images/protocol/01.jpg';
@@ -23,11 +24,17 @@ export default function ProtocolSection() {
   const fillRef = useRef(null);
   const [activeIdx, setActiveIdx] = useState(-1);
   const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await api.getSectionData('protocol-section');
-      if (data) setApiData(data);
+      setLoading(true);
+      try {
+        const data = await api.getSectionData('protocol-section');
+        if (data) setApiData(data);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -41,8 +48,8 @@ export default function ProtocolSection() {
         desc: p.desc
       }));
     }
-    return STEPS;
-  }, [apiData]);
+    return loading ? [] : STEPS;
+  }, [apiData, loading]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,9 +100,13 @@ export default function ProtocolSection() {
       <div className="timeline-glow glow-bottom-right" />
 
       <div className="timeline-header">
-        <div className="timeline-badge">{apiData?.protocolTag || 'THE FOBET PROTOCOL'}</div>
+        <div className="timeline-badge">
+          {loading ? <Skeleton width="120px" height="1em" /> : (apiData?.protocolTag || 'THE FOBET PROTOCOL')}
+        </div>
         <h2 className="timeline-title">
-          {apiData?.heading1 ? (
+          {loading ? (
+            <Skeleton width="60%" height="1.5em" />
+          ) : apiData?.heading1 ? (
             <>
               {apiData.heading1} <span className="gradient-text">{apiData.heading2}</span>
             </>
@@ -106,7 +117,7 @@ export default function ProtocolSection() {
           )}
         </h2>
         <p className="timeline-desc">
-          {apiData?.desc || 'A battle-tested system that transforms everyday people into powerful personal brands.'}
+          {loading ? <Skeleton width="80%" /> : (apiData?.desc || 'A battle-tested system that transforms everyday people into powerful personal brands.')}
         </p>
       </div>
 
@@ -114,7 +125,19 @@ export default function ProtocolSection() {
         <div className="timeline-line-bg" />
         <div className="timeline-line-fill" ref={fillRef} />
 
-        {activeSteps.map((step, i) => (
+        {loading ? (
+          Array(3).fill(0).map((_, i) => (
+            <div key={i} className="timeline-item active">
+              <div className="timeline-content-side">
+                <Skeleton type="rect" height="150px" />
+              </div>
+              <div className="timeline-dot" />
+              <div className="timeline-empty-side">
+                <Skeleton type="rect" height="150px" />
+              </div>
+            </div>
+          ))
+        ) : activeSteps.map((step, i) => (
           <div key={i} className={`timeline-item${activeIdx >= i ? ' active' : ''}`}>
             {/* Odd → content left, image right */}
             {i % 2 === 0 ? (

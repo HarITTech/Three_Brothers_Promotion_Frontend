@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import Skeleton from './Skeleton';
 import './PackagesSection.css';
 
 const WA_MENTOR = 'https://wa.me/919128006318?text=Hi%2C%20I%20would%20like%20to%20book%20a%201%3A1%20Mentorship%20Session%20with%20Vibhav%20Raj.';
@@ -7,11 +8,17 @@ const WA_CREATOR = 'https://wa.me/919128006318?text=Hi%2C%20I%27m%20interested%2
 
 export default function PackagesSection() {
   const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await api.getSectionData('packages-section');
-      if (data) setApiData(data);
+      setLoading(true);
+      try {
+        const data = await api.getSectionData('packages-section');
+        if (data) setApiData(data);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -24,9 +31,13 @@ export default function PackagesSection() {
         <div className="packages-glow glow-center" />
 
         <div className="packages-header">
-          <div className="packages-badge">{apiData?.packTag || 'PRICING PLANS'}</div>
+          <div className="packages-badge">
+            {loading ? <Skeleton width="120px" height="1em" /> : (apiData?.packTag || 'PRICING PLANS')}
+          </div>
           <h2 className="packages-title">
-            {apiData?.heading1 ? (
+            {loading ? (
+              <Skeleton width="60%" height="1.5em" />
+            ) : apiData?.heading1 ? (
               <>
                 {apiData.heading1} <span className="gradient-text">{apiData.heading2}</span>
               </>
@@ -36,11 +47,27 @@ export default function PackagesSection() {
               </>
             )}
           </h2>
-          <p className="packages-desc">{apiData?.desc || 'Choose the package that fits your growth stage'}</p>
+          <p className="packages-desc">
+            {loading ? <Skeleton width="80%" /> : (apiData?.desc || 'Choose the package that fits your growth stage')}
+          </p>
         </div>
 
         <div className="packages-row">
-          {hasDynamicPackages ? (
+          {loading ? (
+            Array(2).fill(0).map((_, i) => (
+              <div key={i} className="package-card">
+                <Skeleton width="60%" height="1.5em" style={{ marginBottom: '20px' }} />
+                <Skeleton width="40%" height="2em" style={{ marginBottom: '20px' }} />
+                <Skeleton type="text" width="80%" />
+                <Skeleton type="text" width="90%" />
+                <div className="package-line" style={{ margin: '20px 0' }} />
+                <Skeleton type="text" width="100%" />
+                <Skeleton type="text" width="100%" />
+                <Skeleton type="text" width="100%" />
+                <Skeleton type="btn" style={{ marginTop: 'auto' }} />
+              </div>
+            ))
+          ) : hasDynamicPackages ? (
             apiData.packData.map((p, i) => (
               <div key={i} className={`package-card ${p.badge ? 'featured' : ''}`}>
                 {p.badge && <div className="package-tag tag-popular">{p.badge}</div>}

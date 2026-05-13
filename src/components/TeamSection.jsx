@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import Skeleton from './Skeleton';
 import './TeamSection.css';
 import riya from '../assets/images/riya.jpg';
 import vibhav from '../assets/images/vibhav.jpg';
@@ -37,11 +38,17 @@ const FOUNDERS = [
 
 export default function TeamSection() {
   const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await api.getSectionData('hero-section');
-      if (data) setApiData(data);
+      setLoading(true);
+      try {
+        const data = await api.getSectionData('hero-section');
+        if (data) setApiData(data);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -72,7 +79,7 @@ export default function TeamSection() {
       bio: m.desc || '',
       links: links
     };
-  }) : FOUNDERS;
+  }) : (loading ? [] : FOUNDERS);
 
   return (
     <div className="about-section-wrapper" id="team">
@@ -94,7 +101,26 @@ export default function TeamSection() {
 
         <div className="team-container">
           <div className="founders-row">
-            {teamMembers.map((f, i) => (
+            {loading ? (
+              Array(2).fill(0).map((_, i) => (
+                <div key={i} className="member-card founder-card">
+                  <div className="avatar-wrapper">
+                    <Skeleton type="circle" width="150px" height="150px" />
+                  </div>
+                  <div className="badges-row">
+                    <Skeleton width="80px" height="1.5em" />
+                    <Skeleton width="120px" height="1.5em" />
+                  </div>
+                  <Skeleton width="150px" height="1.5em" style={{ marginTop: '15px' }} />
+                  <Skeleton type="text" width="90%" style={{ marginTop: '10px' }} />
+                  <Skeleton type="text" width="80%" />
+                  <div className="social-links-team">
+                    <Skeleton width="100px" height="2.5em" />
+                    <Skeleton width="100px" height="2.5em" />
+                  </div>
+                </div>
+              ))
+            ) : teamMembers.map((f, i) => (
               <div key={f.name || i} className="member-card founder-card">
                 <div className="avatar-wrapper">
                   <div className="founder-ring" />
@@ -106,7 +132,7 @@ export default function TeamSection() {
                   ))}
                 </div>
                 <h3 className="member-name">{f.name}</h3>
-                <p className="member-bio" dangerouslySetInnerHTML={{ __html: f.bio || '' }} />
+                <div className="member-bio" dangerouslySetInnerHTML={{ __html: f.bio || '' }} />
                 <div className="social-links-team">
                   {f.links.map((l) => (
                     <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className={`social-btn ${l.cls}`}>

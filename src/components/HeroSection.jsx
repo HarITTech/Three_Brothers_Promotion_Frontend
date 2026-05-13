@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
+import Skeleton from './Skeleton';
 import './HeroSection.css';
 import heroBg1 from '../assets/images/hero-bg-1.png';
 import heroBg2 from '../assets/images/hero-bg-2.png';
@@ -35,14 +36,20 @@ const FOUNDERS = [
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
   const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const timerRef = useRef(null);
   const cursorRef = useRef(null);
   const touchStartX = useRef(0);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await api.getSectionData('hero-section');
-      if (data) setApiData(data);
+      setLoading(true);
+      try {
+        const data = await api.getSectionData('hero-section');
+        if (data) setApiData(data);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -65,15 +72,18 @@ export default function HeroSection() {
           card2Heading: m.card2Heading,
           card2Text: m.card2Text,
         }))
-    : FOUNDERS;
+    : (loading ? [] : FOUNDERS);
 
   // Auto-slide
   useEffect(() => {
-    timerRef.current = setInterval(() => setCurrent((c) => (c + 1) % activeFounders.length), 4500);
+    if (activeFounders.length > 0) {
+      timerRef.current = setInterval(() => setCurrent((c) => (c + 1) % activeFounders.length), 4500);
+    }
     return () => clearInterval(timerRef.current);
   }, [activeFounders.length]);
 
   const goTo = (idx) => {
+    if (activeFounders.length === 0) return;
     clearInterval(timerRef.current);
     setCurrent(idx);
     timerRef.current = setInterval(() => setCurrent((c) => (c + 1) % activeFounders.length), 4500);
@@ -100,12 +110,11 @@ export default function HeroSection() {
   // Touch swipe
   const onTouchStart = (e) => { touchStartX.current = e.changedTouches[0].screenX; };
   const onTouchEnd = (e) => {
+    if (activeFounders.length === 0) return;
     const dx = e.changedTouches[0].screenX - touchStartX.current;
     if (dx < -50) goTo((current + 1) % activeFounders.length);
     else if (dx > 50) goTo((current - 1 + activeFounders.length) % activeFounders.length);
   };
-
-  const currentMember = activeFounders[current];
 
   return (
     <div className="fobet-hero-wrapper" id="home">
@@ -131,11 +140,18 @@ export default function HeroSection() {
               <div className="logo-icon">
                 <img src={logoImg} alt="TB" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
               </div>
-              <span className="logo-text">{apiData?.heroTag || 'Three Brothers Promotions'}</span>
+              <span className="logo-text">
+                {loading ? <Skeleton width="150px" height="1.2em" /> : (apiData?.heroTag || 'Three Brothers Promotions')}
+              </span>
             </div>
 
             <div className="hero-headline hero-fade-in delay-2">
-              {apiData?.heroHeading1 ? (
+              {loading ? (
+                <>
+                  <Skeleton type="title" width="90%" />
+                  <Skeleton type="title" width="70%" />
+                </>
+              ) : apiData?.heroHeading1 ? (
                 <>
                   {apiData.heroHeading1.split('\\n').map((line, i) => (
                     <span key={i}>{line}{i === 0 && <br />}</span>
@@ -182,9 +198,11 @@ export default function HeroSection() {
 
             <div className="hero-fade-in delay-3" style={{ marginBottom: '40px' }}>
               <h1 className="hero-description" style={{ marginBottom: '8px' }}>
-                {apiData?.heroDesc1 || 'Done-for-you Personal Branding Agency that converts strangers into customers.'}
+                {loading ? <Skeleton width="80%" /> : (apiData?.heroDesc1 || 'Done-for-you Personal Branding Agency that converts strangers into customers.')}
               </h1>
-              {apiData?.heroDesc2 && (
+              {loading ? (
+                <Skeleton width="60%" />
+              ) : apiData?.heroDesc2 && (
                 <p className="hero-description" dangerouslySetInnerHTML={{ __html: apiData.heroDesc2 }} />
               )}
             </div>
@@ -212,7 +230,14 @@ export default function HeroSection() {
               <div className="founder-arch" />
 
               <div className="founder-slider-wrapper">
-                {activeFounders.map((f, i) => (
+                {loading ? (
+                  <div className="founder-slide active">
+                    <Skeleton type="rect" className="founder-img" height="450px" />
+                    <div className="float-card card-stats-riya">
+                      <Skeleton width="120px" height="60px" />
+                    </div>
+                  </div>
+                ) : activeFounders.map((f, i) => (
                   <div key={f.key} className={`founder-slide${current === i ? ' active' : ''}`}>
                     <img src={f.img} alt={f.name} className={f.imgClass} draggable={false} loading="lazy" />
 
@@ -270,7 +295,12 @@ export default function HeroSection() {
 
             {/* Info */}
             <div className="founder-info-container">
-              {activeFounders.map((f, i) => (
+              {loading ? (
+                <div className="info-slide active">
+                  <Skeleton width="100px" height="1em" style={{ marginBottom: '10px' }} />
+                  <Skeleton width="200px" height="2em" />
+                </div>
+              ) : activeFounders.map((f, i) => (
                 <div key={f.key} className={`info-slide${current === i ? ' active' : ''}`}>
                   <p className="founder-label">{f.label}</p>
                   <h3 className="founder-name">{f.name}</h3>
@@ -280,7 +310,9 @@ export default function HeroSection() {
 
             {/* Dots */}
             <div className="slider-controls">
-              {activeFounders.map((_, i) => (
+              {loading ? (
+                <Skeleton width="60px" height="10px" />
+              ) : activeFounders.map((_, i) => (
                 <button
                   key={i}
                   className={`slider-dot${current === i ? ' active' : ''}`}

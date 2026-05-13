@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import Skeleton from './Skeleton';
 import './ResultsSection.css';
 
 // Import result images
@@ -31,11 +32,17 @@ const CARDS = [
 
 export default function ResultsSection() {
   const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await api.getSectionData('result-section');
-      if (data) setApiData(data);
+      setLoading(true);
+      try {
+        const data = await api.getSectionData('result-section');
+        if (data) setApiData(data);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -47,7 +54,7 @@ export default function ResultsSection() {
         tagClass: i % 2 === 0 ? 'tag-months' : 'tag-starting',
         href: c.instagramId || '#'
       }))
-    : CARDS;
+    : (loading ? [] : CARDS);
 
   return (
     <div className="fobet-results-wrapper" id="results">
@@ -59,9 +66,13 @@ export default function ResultsSection() {
         <i className="fa-solid fa-star sparkle" />
         <i className="fa-solid fa-star sparkle" />
 
-        <div className="results-badge">{apiData?.resultTag || 'PROVEN RESULTS'}</div>
+        <div className="results-badge">
+          {loading ? <Skeleton width="120px" height="1em" /> : (apiData?.resultTag || 'PROVEN RESULTS')}
+        </div>
         <h2 className="results-title">
-          {apiData?.heading1 ? (
+          {loading ? (
+            <Skeleton width="60%" height="1.5em" />
+          ) : apiData?.heading1 ? (
             <>
               {apiData.heading1} <span className="gradient-text">{apiData.heading2}</span>
             </>
@@ -72,11 +83,17 @@ export default function ResultsSection() {
           )}
         </h2>
         <p className="results-subtext">
-          {apiData?.desc || "We work with business owners, entrepreneurs and professionals"}
+          {loading ? <Skeleton width="80%" /> : (apiData?.desc || "We work with business owners, entrepreneurs and professionals")}
         </p>
 
         <div className="results-grid">
-          {activeCards.map((c, i) => (
+          {loading ? (
+            Array(6).fill(0).map((_, i) => (
+              <div key={i} className="result-card">
+                <Skeleton type="rect" height="400px" />
+              </div>
+            ))
+          ) : activeCards.map((c, i) => (
             <a
               key={i}
               href={c.href}
@@ -93,7 +110,9 @@ export default function ResultsSection() {
         </div>
 
         <p className="many-more-text">
-          {apiData?.endText ? (
+          {loading ? (
+            <Skeleton width="150px" height="1em" />
+          ) : apiData?.endText ? (
             <>
               <span className="gradient-text">&amp;</span> {apiData.endText}
             </>

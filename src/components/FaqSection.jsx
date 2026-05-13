@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import Skeleton from './Skeleton';
 import './FaqSection.css';
 
 const FAQS = [
@@ -55,11 +56,17 @@ const FAQS = [
 
 export default function FaqSection() {
   const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await api.getSectionData('faqs-section');
-      if (data) setApiData(data);
+      setLoading(true);
+      try {
+        const data = await api.getSectionData('faqs-section');
+        if (data) setApiData(data);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -69,7 +76,7 @@ export default function FaqSection() {
         q: f.que,
         a: f.ans
       }))
-    : FAQS;
+    : (loading ? [] : FAQS);
 
   return (
     <div className="faq-section-wrapper" id="faq">
@@ -78,9 +85,13 @@ export default function FaqSection() {
         <div className="faq-glow faq-glow-right" />
 
         <div className="faq-header">
-          <div className="faq-badge">{apiData?.faqTag || 'GOT QUESTIONS?'}</div>
+          <div className="faq-badge">
+            {loading ? <Skeleton width="120px" height="1em" /> : (apiData?.faqTag || 'GOT QUESTIONS?')}
+          </div>
           <h2 className="faq-title">
-            {apiData?.heading1 ? (
+            {loading ? (
+              <Skeleton width="60%" height="1.5em" />
+            ) : apiData?.heading1 ? (
               <>
                 {apiData.heading1} <span className="gradient-text">{apiData.heading2}</span>
               </>
@@ -90,11 +101,19 @@ export default function FaqSection() {
               </>
             )}
           </h2>
-          <p className="faq-desc">{apiData?.desc || 'Everything you need to know about our service'}</p>
+          <p className="faq-desc">
+            {loading ? <Skeleton width="80%" /> : (apiData?.desc || 'Everything you need to know about our service')}
+          </p>
         </div>
 
         <div className="faq-container">
-          {activeFaqs.map((item, i) => (
+          {loading ? (
+            Array(5).fill(0).map((_, i) => (
+              <div key={i} className="faq-item" style={{ padding: '20px' }}>
+                <Skeleton width="90%" height="1.2em" />
+              </div>
+            ))
+          ) : activeFaqs.map((item, i) => (
             <details key={i} className="faq-item">
               <summary>
                 {item.q}

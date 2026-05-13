@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { api } from '../services/api';
+import Skeleton from './Skeleton';
 import './TestimonialsSection.css';
 
 const VIDEOS = [
@@ -32,7 +33,20 @@ const getVideoType = (url) => {
   return { type: 'direct' };
 };
 
-function VideoCard({ src, handle }) {
+function VideoCard({ src, handle, loading }) {
+  if (loading) {
+    return (
+      <div className="video-card">
+        <div className="video-wrapper">
+          <Skeleton type="rect" height="400px" />
+          <div className="video-handle">
+            <Skeleton width="80px" height="1em" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const videoInfo = getVideoType(src);
   const isSocial = videoInfo.type === 'youtube' || videoInfo.type === 'instagram';
 
@@ -78,11 +92,17 @@ export default function TestimonialsSection() {
   const [mobileIndex, setMobileIndex] = useState(0);
   const touchStartX = useRef(0);
   const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await api.getSectionData('clients-section');
-      if (data) setApiData(data);
+      setLoading(true);
+      try {
+        const data = await api.getSectionData('clients-section');
+        if (data) setApiData(data);
+      } finally {
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
@@ -93,13 +113,14 @@ export default function TestimonialsSection() {
         handle: v.badge,
         href: v.link // default href to the link if they don't have a separate profile URL
       }))
-    : VIDEOS;
+    : (loading ? [] : VIDEOS);
 
   const prevSlide = () => setMobileIndex((i) => Math.max(i - 1, 0));
   const nextSlide = () => setMobileIndex((i) => Math.min(i + 1, activeVideos.length - 1));
 
   const onTouchStart = (e) => { touchStartX.current = e.changedTouches[0].screenX; };
   const onTouchEnd = (e) => {
+    if (activeVideos.length === 0) return;
     const dx = e.changedTouches[0].screenX - touchStartX.current;
     if (dx < -50) nextSlide();
     else if (dx > 50) prevSlide();
@@ -119,9 +140,13 @@ export default function TestimonialsSection() {
       </div>
 
       <div className="testimonials-header">
-        <div className="testimonials-badge">{apiData?.cliTag || 'CLIENT LOVE'}</div>
+        <div className="testimonials-badge">
+          {loading ? <Skeleton width="120px" height="1em" /> : (apiData?.cliTag || 'CLIENT LOVE')}
+        </div>
         <h2 className="testimonials-title">
-          {apiData?.heading1 ? (
+          {loading ? (
+            <Skeleton width="60%" height="1.5em" />
+          ) : apiData?.heading1 ? (
             <>
               {apiData.heading1} <span className="gradient-text">{apiData.heading2}</span>
             </>
@@ -131,12 +156,16 @@ export default function TestimonialsSection() {
             </>
           )}
         </h2>
-        <p className="testimonials-desc">{apiData?.desc || 'Real results from creators and brands just like you.'}</p>
+        <p className="testimonials-desc">
+          {loading ? <Skeleton width="80%" /> : (apiData?.desc || 'Real results from creators and brands just like you.')}
+        </p>
       </div>
 
       {/* Desktop grid */}
       <div className="videos-grid">
-        {activeVideos.map((v, i) => <VideoCard key={i} {...v} />)}
+        {loading ? (
+          Array(4).fill(0).map((_, i) => <VideoCard key={i} loading={true} />)
+        ) : activeVideos.map((v, i) => <VideoCard key={i} {...v} />)}
       </div>
 
       {/* Mobile slider */}
@@ -155,13 +184,17 @@ export default function TestimonialsSection() {
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
-            {activeVideos.map((v, i) => <VideoCard key={i} {...v} />)}
+            {loading ? (
+              Array(3).fill(0).map((_, i) => <VideoCard key={i} loading={true} />)
+            ) : activeVideos.map((v, i) => <VideoCard key={i} {...v} />)}
           </div>
         </div>
       </div>
 
       <p className="many-more-text-t">
-        {apiData?.endText ? (
+        {loading ? (
+          <Skeleton width="150px" height="1em" />
+        ) : apiData?.endText ? (
           <>
             <span className="gradient-text">&amp;</span> {apiData.endText}
           </>

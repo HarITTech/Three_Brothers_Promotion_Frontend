@@ -189,3 +189,30 @@ button {
   background: var(--brand-violet);
 }
 
+/* ── Skeleton Loading ── */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.05) 25%,
+    rgba(139, 92, 246, 0.12) 37%,
+    rgba(139, 92, 246, 0.05) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+  display: inline-block;
+  width: 100%;
+}
+
+.skeleton-text { height: 1em; margin-bottom: 0.5em; }
+.skeleton-title { height: 2.3em; margin-bottom: 1.2em; width: 80%; }
+.skeleton-circle { border-radius: 50%; }
+.skeleton-rect { min-height: 200px; }
+.skeleton-icon { width: 40px; height: 40px; border-radius: 8px; }
+.skeleton-btn { width: 160px; height: 48px; border-radius: 30px; }
+
