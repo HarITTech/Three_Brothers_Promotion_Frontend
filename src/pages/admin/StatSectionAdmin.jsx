@@ -93,6 +93,16 @@ export default function StatSectionAdmin() {
     });
   };
 
+  const availableIcons = [
+    { label: 'Chart Line', value: 'fa-solid fa-chart-line' },
+    { label: 'Rocket', value: 'fa-solid fa-rocket' },
+    { label: 'Eye', value: 'fa-solid fa-eye' },
+    { label: 'Users', value: 'fa-solid fa-users' },
+    { label: 'Dollar', value: 'fa-solid fa-dollar-sign' },
+    { label: 'Bullhorn', value: 'fa-solid fa-bullhorn' },
+    { label: 'Trophy', value: 'fa-solid fa-trophy' }
+  ];
+
   if (loading) return <Loader fullPage={true} />;
 
   return (
@@ -131,8 +141,32 @@ export default function StatSectionAdmin() {
               <input className="admin-form-control" value={data.statTag || ''} onChange={e => setData({...data, statTag: e.target.value})} placeholder="e.g. OUR IMPACT" />
             </div>
             <div className="admin-form-group">
-              <label>Section Icon (FontAwesome)</label>
-              <input className="admin-form-control" value={data.statIcon || ''} onChange={e => setData({...data, statIcon: e.target.value})} placeholder="fa-solid fa-rocket" />
+              <label>Section Icon</label>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div style={{ 
+                  width: '46px', 
+                  height: '46px', 
+                  borderRadius: '12px', 
+                  backgroundColor: 'var(--admin-primary)', 
+                  color: '#fff', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  fontSize: '1.2rem'
+                }}>
+                  <i className={data.statIcon || 'fa-solid fa-rocket'}></i>
+                </div>
+                <select 
+                  className="admin-form-control" 
+                  value={data.statIcon || 'fa-solid fa-rocket'} 
+                  onChange={e => setData({...data, statIcon: e.target.value})}
+                  style={{ flex: 1 }}
+                >
+                  {availableIcons.map(icon => (
+                    <option key={icon.value} value={icon.value}>{icon.label}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -176,7 +210,7 @@ export default function StatSectionAdmin() {
                   fontSize: '0.75rem', 
                   fontWeight: '800' 
                 }}>
-                  CARD {idx + 1} {card === 'card2' ? '(MAIN)' : ''}
+                  {card === 'card2' ? 'MAIN CARD (CENTER)' : `STAT CARD ${card === 'card1' ? '1' : '2'}`}
                 </div>
                 
                 <div className="admin-form-group" style={{ marginTop: '10px' }}>
@@ -189,8 +223,31 @@ export default function StatSectionAdmin() {
                 </div>
                 {card !== 'card2' && (
                   <div className="admin-form-group" style={{ marginBottom: 0 }}>
-                    <label>Icon</label>
-                    <input className="admin-form-control" value={data[card].field3 || ''} onChange={e => handleCardChange(card, 'field3', e.target.value)} placeholder="fa-solid fa-eye" />
+                    <label>Card Icon</label>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <div style={{ 
+                        width: '40px', 
+                        height: '40px', 
+                        borderRadius: '10px', 
+                        backgroundColor: 'var(--admin-primary)', 
+                        color: '#fff', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center'
+                      }}>
+                        <i className={data[card].field3 || 'fa-solid fa-chart-line'}></i>
+                      </div>
+                      <select 
+                        className="admin-form-control" 
+                        value={data[card].field3 || 'fa-solid fa-chart-line'} 
+                        onChange={e => handleCardChange(card, 'field3', e.target.value)}
+                        style={{ flex: 1 }}
+                      >
+                        {availableIcons.map(icon => (
+                          <option key={icon.value} value={icon.value}>{icon.label}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 )}
               </div>

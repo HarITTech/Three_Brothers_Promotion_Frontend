@@ -20,6 +20,11 @@
   --admin-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
+.bio-highlight {
+  color: #a78bfa !important;
+  font-weight: 600 !important;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

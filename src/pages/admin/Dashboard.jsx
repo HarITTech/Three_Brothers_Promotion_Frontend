@@ -87,7 +87,7 @@ export default function Dashboard() {
   const stats = [
     { label: 'Team Members', value: counts.team, icon: 'fa-users', color: '#6366f1', trend: 'Content' },
     { label: 'Active FAQs', value: counts.faqs, icon: 'fa-circle-question', color: '#10b981', trend: 'Support' },
-    { label: 'Case Studies', value: counts.results, icon: 'fa-briefcase', color: '#f59e0b', trend: 'Portfolio' },
+    { label: 'Client Results', value: counts.results, icon: 'fa-briefcase', color: '#f59e0b', trend: 'Portfolio' },
     { label: 'Video Leads', value: counts.videos, icon: 'fa-video', color: '#ef4444', trend: 'Media' },
   ];
 
@@ -198,7 +198,7 @@ export default function Dashboard() {
                 <Link to="/tbp-admin/result-section" className="admin-btn admin-btn-secondary" style={{ justifyContent: 'flex-start', padding: '16px', borderRadius: '14px' }}>
                   <i className="fa-solid fa-briefcase" style={{ color: '#3b82f6' }}></i>
                   <div style={{ textAlign: 'left', marginLeft: '10px' }}>
-                    <div style={{ fontSize: '0.95rem', fontWeight: '700' }}>New Case Study</div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: '700' }}>New Client Result</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-sub)', fontWeight: 'normal' }}>Showcase success</div>
                   </div>
                 </Link>

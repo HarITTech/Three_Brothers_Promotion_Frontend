@@ -1,15 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from '../../services/api';
 import '../../admin.css';
 import Loader from '../../components/admin/Loader';
 
 export default function TeamSectionAdmin() {
+  const bioEditorRef = useRef(null);
   const [data, setData] = useState({});
   const [docId, setDocId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Toolbar active states
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   // Modal states for Team Member
   const [showMemberModal, setShowMemberModal] = useState(false);
@@ -79,8 +85,12 @@ export default function TeamSectionAdmin() {
     setSubmitting(true);
     setModalError('');
     try {
+      // Ensure we get the HTML from the editor
+      const finalDesc = bioEditorRef.current ? bioEditorRef.current.innerHTML : memberForm.desc;
+      const updatedForm = { ...memberForm, desc: finalDesc };
+
       if (isEditingMember) {
-        await api.customPut(`/hero-section/update-member/${docId}/${currentMemberId}`, memberForm);
+        await api.customPut(`/hero-section/update-member/${docId}/${currentMemberId}`, updatedForm);
         if (memberImage) {
           const formData = new FormData();
           formData.append('image', memberImage);
@@ -91,8 +101,8 @@ export default function TeamSectionAdmin() {
         if (!memberImage) throw new Error('Profile image is required for new members');
         const formData = new FormData();
         formData.append('image', memberImage);
-        Object.keys(memberForm).forEach(key => {
-          formData.append(key, memberForm[key]);
+        Object.keys(updatedForm).forEach(key => {
+          formData.append(key, updatedForm[key]);
         });
         await api.customPost(`/hero-section/add-member/${docId}`, formData, true);
         setSuccess('Member added successfully');
@@ -120,6 +130,74 @@ export default function TeamSectionAdmin() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  useEffect(() => {
+    if (showMemberModal && bioEditorRef.current) {
+      // Only set innerHTML if it's different to avoid cursor jumps
+      // But since we removed dangerouslySetInnerHTML, we set it once when opening
+      bioEditorRef.current.innerHTML = memberForm.desc || '';
+    }
+  }, [showMemberModal]);
+
+  const updateToolbarStates = () => {
+    setIsBold(document.queryCommandState('bold'));
+    setIsItalic(document.queryCommandState('italic'));
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      let node = selection.anchorNode;
+      if (node && node.nodeType === 3) node = node.parentNode;
+      setIsHighlighted(node ? !!node.closest('.bio-highlight') : false);
+    }
+  };
+
+  const formatText = (e, command) => {
+    e.preventDefault();
+    document.execCommand(command, false, null);
+    if (bioEditorRef.current) {
+      setMemberForm(prev => ({ ...prev, desc: bioEditorRef.current.innerHTML }));
+    }
+    updateToolbarStates();
+  };
+
+  const formatHighlight = (e) => {
+    e.preventDefault();
+    const selection = window.getSelection();
+    if (!selection.rangeCount || selection.isCollapsed) return;
+    
+    const range = selection.getRangeAt(0);
+    let container = range.commonAncestorContainer;
+    if (container.nodeType === 3) container = container.parentNode;
+    
+    const existingHighlight = container.closest('.bio-highlight');
+
+    if (existingHighlight) {
+      // Toggle OFF: Remove the span but keep content
+      const parent = existingHighlight.parentNode;
+      const fragment = document.createDocumentFragment();
+      while (existingHighlight.firstChild) {
+        fragment.appendChild(existingHighlight.firstChild);
+      }
+      parent.replaceChild(fragment, existingHighlight);
+    } else {
+      // Toggle ON: Wrap selection in span
+      const span = document.createElement('span');
+      span.className = 'bio-highlight';
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      
+      // Maintain selection on the new span
+      selection.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      selection.addRange(newRange);
+    }
+    
+    if (bioEditorRef.current) {
+      setMemberForm(prev => ({ ...prev, desc: bioEditorRef.current.innerHTML }));
+    }
+    updateToolbarStates();
   };
 
   const allMembers = data.teamMember || [];
@@ -166,7 +244,9 @@ export default function TeamSectionAdmin() {
                         <img src={member.image} alt={member.name} style={{ width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover' }} />
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                           <span style={{ fontWeight: '700' }}>{member.name}</span>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--admin-text-sub)' }}>{member.desc ? member.desc.substring(0, 30) + '...' : 'No bio'}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--admin-text-sub)' }}>
+                            <span dangerouslySetInnerHTML={{ __html: member.desc ? member.desc.substring(0, 50) + '...' : 'No bio' }} />
+                          </span>
                         </div>
                       </div>
                     </td>
@@ -257,7 +337,7 @@ export default function TeamSectionAdmin() {
 
       {showMemberModal && (
         <div className="admin-modal">
-          <div className="admin-modal-content">
+          <div className="admin-modal-content" style={{ maxWidth: '800px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', padding: '30px 40px 0' }}>
               <h3 style={{ margin: 0, padding: 0 }}>{isEditingMember ? 'Edit Member' : 'Add New Member'}</h3>
               <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'var(--admin-text-sub)' }} onClick={() => setShowMemberModal(false)}></i>
@@ -270,7 +350,7 @@ export default function TeamSectionAdmin() {
               </div>
             )}
 
-            <form onSubmit={handleMemberSubmit}>
+            <form onSubmit={handleMemberSubmit} style={{ padding: '0 40px 40px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                 <div className="admin-form-group">
                   <label>Full Name</label>
@@ -297,13 +377,67 @@ export default function TeamSectionAdmin() {
               </div>
 
               <div className="admin-form-group">
-                <label>Bio (HTML allowed)</label>
-                <textarea
-                  className="admin-form-control"
-                  rows="3"
-                  value={memberForm.desc}
-                  onChange={e => setMemberForm({ ...memberForm, desc: e.target.value })}
-                  placeholder='Tell their story...'
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
+                  <label style={{ marginBottom: 0 }}>Member Bio</label>
+                  <div style={{ display: 'flex', gap: '5px' }}>
+                    <button 
+                      type="button" 
+                      className="admin-btn admin-btn-secondary" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px', height: '28px',
+                        backgroundColor: isBold ? 'var(--admin-primary)' : '',
+                        color: isBold ? '#fff' : ''
+                      }} 
+                      onMouseDown={(e) => formatText(e, 'bold')}
+                    >
+                      <i className="fa-solid fa-bold"></i>
+                    </button>
+                    <button 
+                      type="button" 
+                      className="admin-btn admin-btn-secondary" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px', height: '28px',
+                        backgroundColor: isItalic ? 'var(--admin-primary)' : '',
+                        color: isItalic ? '#fff' : ''
+                      }} 
+                      onMouseDown={(e) => formatText(e, 'italic')}
+                    >
+                      <i className="fa-solid fa-italic"></i>
+                    </button>
+                    <button 
+                      type="button" 
+                      className="admin-btn admin-btn-secondary" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px', height: '28px',
+                        backgroundColor: isHighlighted ? '#a78bfa' : '#fffbeb',
+                        color: isHighlighted ? '#fff' : '#d97706',
+                        border: isHighlighted ? '1px solid #8b5cf6' : '1px solid #fcd34d'
+                      }} 
+                      onMouseDown={formatHighlight}
+                    >
+                      <i className="fa-solid fa-highlighter"></i>
+                    </button>
+                  </div>
+                </div>
+                <div 
+                  ref={bioEditorRef}
+                  contentEditable
+                  className="admin-form-control" 
+                  style={{ 
+                    minHeight: '120px', 
+                    fontSize: '0.9rem', 
+                    overflowY: 'auto',
+                    backgroundColor: '#fff',
+                    whiteSpace: 'pre-wrap'
+                  }} 
+                  onInput={() => {
+                    if (bioEditorRef.current) {
+                      setMemberForm(prev => ({ ...prev, desc: bioEditorRef.current.innerHTML }));
+                    }
+                  }}
+                  onSelect={updateToolbarStates}
+                  onKeyUp={updateToolbarStates}
+                  onClick={updateToolbarStates}
                 />
               </div>
 

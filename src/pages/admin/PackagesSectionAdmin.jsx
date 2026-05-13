@@ -1,9 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from '../../services/api';
 import '../../admin.css';
 import Loader from '../../components/admin/Loader';
 
 export default function PackagesSectionAdmin() {
+  const editorRef = useRef(null);
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isHighlighted, setIsHighlighted] = useState(false);
   const [data, setData] = useState({
     packTag: '',
     heading1: '',
@@ -116,7 +120,7 @@ export default function PackagesSectionAdmin() {
       badge: p.badge || '',
       guaranteeTitle: p.guaranteeTitle || '',
       guaranteeText: p.guaranteeText || '',
-      points: (p.points || []).join('\n')
+      points: (p.points || []).map(pt => `<div>${pt}</div>`).join('')
     });
     setModalError('');
     setCurrentPackageId(p._id);
@@ -124,12 +128,32 @@ export default function PackagesSectionAdmin() {
     setShowPackageModal(true);
   };
 
+  useEffect(() => {
+    if (showPackageModal && editorRef.current) {
+      editorRef.current.innerHTML = packageForm.points || '';
+    }
+  }, [showPackageModal]);
+
   const handlePackageSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setModalError('');
     try {
-      const pointsArray = packageForm.points.split('\n').filter(f => f.trim() !== '');
+      // Robust HTML to Array conversion
+      const rawHtml = editorRef.current ? editorRef.current.innerHTML : packageForm.points;
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = rawHtml;
+      
+      // Extract text with HTML tags for each line
+      let pointsArray = [];
+      if (tempDiv.children.length > 0) {
+        pointsArray = Array.from(tempDiv.children).map(child => child.innerHTML.trim());
+      } else {
+        pointsArray = rawHtml.split(/<br\s*\/?>/i).map(line => line.trim());
+      }
+      
+      pointsArray = pointsArray.filter(f => f !== '' && f !== '<br>');
+
       const payload = { 
         heading: packageForm.heading,
         price: packageForm.price,
@@ -173,6 +197,66 @@ export default function PackagesSectionAdmin() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const updateToolbarStates = () => {
+    setIsBold(document.queryCommandState('bold'));
+    setIsItalic(document.queryCommandState('italic'));
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      let node = selection.anchorNode;
+      if (node && node.nodeType === 3) node = node.parentNode;
+      setIsHighlighted(node ? !!node.closest('.bio-highlight') : false);
+    }
+  };
+
+  const formatText = (e, command) => {
+    e.preventDefault();
+    document.execCommand(command, false, null);
+    if (editorRef.current) {
+      setPackageForm(prev => ({ ...prev, points: editorRef.current.innerHTML }));
+    }
+    updateToolbarStates();
+  };
+
+  const formatHighlight = (e) => {
+    e.preventDefault();
+    const selection = window.getSelection();
+    if (!selection.rangeCount || selection.isCollapsed) return;
+    
+    const range = selection.getRangeAt(0);
+    let container = range.commonAncestorContainer;
+    if (container.nodeType === 3) container = container.parentNode;
+    
+    const existingHighlight = container.closest('.bio-highlight');
+
+    if (existingHighlight) {
+      // Toggle OFF: Remove the span but keep content
+      const parent = existingHighlight.parentNode;
+      const fragment = document.createDocumentFragment();
+      while (existingHighlight.firstChild) {
+        fragment.appendChild(existingHighlight.firstChild);
+      }
+      parent.replaceChild(fragment, existingHighlight);
+    } else {
+      // Toggle ON: Wrap selection in span
+      const span = document.createElement('span');
+      span.className = 'bio-highlight';
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      
+      // Maintain selection on the new span
+      selection.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      selection.addRange(newRange);
+    }
+    
+    if (editorRef.current) {
+      setPackageForm(prev => ({ ...prev, points: editorRef.current.innerHTML }));
+    }
+    updateToolbarStates();
   };
 
   if (loading) return <Loader fullPage={true} />;
@@ -370,11 +454,73 @@ export default function PackagesSectionAdmin() {
               </div>
 
               <div className="admin-form-group">
-                <label>Key Features & Benefits (One per line)</label>
-                <p style={{ fontSize: '11px', color: 'var(--admin-text-sub)', marginTop: '-8px', marginBottom: '8px' }}>
-                  Use <code>&lt;strong&gt;Text&lt;/strong&gt;</code> for bold emphasis.
-                </p>
-                <textarea className="admin-form-control" style={{ minHeight: '180px', fontFamily: 'monospace', fontSize: '0.9rem' }} placeholder="Feature 1&#10;Feature 2&#10;..." value={packageForm.points} onChange={e => setPackageForm({...packageForm, points: e.target.value})} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
+                  <div>
+                    <label>Key Features & Benefits</label>
+                    <p style={{ fontSize: '11px', color: 'var(--admin-text-sub)', marginTop: '-4px', margin: 0 }}>
+                      Each line is a new feature. Select text to style it.
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '5px' }}>
+                    <button 
+                      type="button" 
+                      className="admin-btn admin-btn-secondary" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px', height: '28px',
+                        backgroundColor: isBold ? 'var(--admin-primary)' : '',
+                        color: isBold ? '#fff' : ''
+                      }} 
+                      onMouseDown={(e) => formatText(e, 'bold')}
+                    >
+                      <i className="fa-solid fa-bold"></i>
+                    </button>
+                    <button 
+                      type="button" 
+                      className="admin-btn admin-btn-secondary" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px', height: '28px',
+                        backgroundColor: isItalic ? 'var(--admin-primary)' : '',
+                        color: isItalic ? '#fff' : ''
+                      }} 
+                      onMouseDown={(e) => formatText(e, 'italic')}
+                    >
+                      <i className="fa-solid fa-italic"></i>
+                    </button>
+                    <button 
+                      type="button" 
+                      className="admin-btn admin-btn-secondary" 
+                      style={{ 
+                        padding: '4px 8px', fontSize: '11px', height: '28px',
+                        backgroundColor: isHighlighted ? '#a78bfa' : '#fffbeb',
+                        color: isHighlighted ? '#fff' : '#d97706',
+                        border: isHighlighted ? '1px solid #8b5cf6' : '1px solid #fcd34d'
+                      }} 
+                      onMouseDown={formatHighlight}
+                    >
+                      <i className="fa-solid fa-highlighter"></i>
+                    </button>
+                  </div>
+                </div>
+                <div 
+                  ref={editorRef}
+                  contentEditable
+                  className="admin-form-control" 
+                  style={{ 
+                    minHeight: '180px', 
+                    fontSize: '0.9rem', 
+                    overflowY: 'auto',
+                    backgroundColor: '#fff',
+                    whiteSpace: 'pre-wrap'
+                  }} 
+                  onInput={() => {
+                    if (editorRef.current) {
+                      setPackageForm(prev => ({ ...prev, points: editorRef.current.innerHTML }));
+                    }
+                  }}
+                  onSelect={updateToolbarStates}
+                  onKeyUp={updateToolbarStates}
+                  onClick={updateToolbarStates}
+                />
               </div>
 
               <div style={{ display: 'flex', gap: '15px', marginTop: '40px' }}>

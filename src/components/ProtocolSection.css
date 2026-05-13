@@ -111,7 +111,7 @@
   background: linear-gradient(180deg, var(--brand-pink-2), var(--brand-violet)) !important;
   transform: translateX(-50%) !important;
   border-radius: 4px !important;
-  box-shadow: 0 0 15px rgba(217, 70, 239, 0.6) !important;
+  box-shadow: 0 0 15px rgba(78, 70, 239, 0.6) !important;
   transition: height 0.1s linear !important;
   z-index: 1 !important;
 }
@@ -147,7 +147,7 @@
 .timeline-item.active .timeline-dot {
   border-color: var(--brand-pink-2) !important;
   background: var(--brand-pink-2) !important;
-  box-shadow: 0 0 20px rgba(255, 134, 199, 0.6), 0 0 0 4px var(--bg-dark) !important;
+  box-shadow: 0 0 20px rgba(150, 134, 255, 0.6), 0 0 0 4px var(--bg-dark) !important;
   transform: translate(-50%, -50%) scale(1.2) !important;
 }
 
@@ -199,7 +199,7 @@
 }
 
 .timeline-item.active .glass-card-tl {
-  border-color: rgba(255, 134, 199, 0.3) !important;
+  border-color: rgba(148, 134, 255, 0.3) !important;
   transform: translateY(-5px) !important;
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5) !important;
 }
@@ -256,7 +256,7 @@
   color: var(--text-white) !important;
   font-size: 20px !important;
   margin-bottom: 15px !important;
-  box-shadow: 0 5px 15px rgba(217, 70, 239, 0.3) !important;
+  box-shadow: 0 5px 15px rgba(70, 70, 239, 0.3) !important;
 }
 
 .timeline-image-card {

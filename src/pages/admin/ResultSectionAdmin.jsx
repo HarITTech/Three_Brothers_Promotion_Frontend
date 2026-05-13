@@ -124,16 +124,16 @@ export default function ResultSectionAdmin() {
           formData.append('image', clientImage);
           await api.customPost(`/result-section/update-image/${docId}/${currentClientId}`, formData, true);
         }
-        setSuccess('Client case study updated successfully');
+        setSuccess('Client Result updated successfully');
       } else {
-        if (!clientImage) throw new Error('Image is required for new case studies');
+        if (!clientImage) throw new Error('Image is required for new Client Result');
         const formData = new FormData();
         formData.append('image', clientImage);
         Object.keys(clientForm).forEach(key => {
           formData.append(key, clientForm[key]);
         });
         await api.customPost(`/result-section/add-client/${docId}`, formData, true);
-        setSuccess('Client case study added successfully');
+        setSuccess('Client Result added successfully');
       }
       setShowClientModal(false);
       fetchData();
@@ -146,11 +146,11 @@ export default function ResultSectionAdmin() {
   };
 
   const handleDeleteClient = async (clientId) => {
-    if (!window.confirm('Are you sure you want to delete this case study?')) return;
+    if (!window.confirm('Are you sure you want to delete this Client Results?')) return;
     setSubmitting(true);
     try {
       await api.customDelete(`/result-section/delete-client/${docId}/${clientId}`);
-      setSuccess('Case study deleted successfully');
+      setSuccess('Client Results deleted successfully');
       fetchData();
       window.scrollTo(0, 0);
     } catch (err) {
@@ -229,11 +229,11 @@ export default function ResultSectionAdmin() {
         <div className="admin-card-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <i className="fa-solid fa-users-viewfinder" style={{ color: 'var(--admin-primary)' }}></i>
-            <span>Client Case Studies</span>
+            <span>Client Results</span>
           </div>
           <button className="admin-btn" onClick={openAddClient}>
             <i className="fa-solid fa-plus"></i>
-            Add Case Study
+            Add Client Results
           </button>
         </div>
         <div className="admin-card-body" style={{ padding: 0 }}>
@@ -242,7 +242,7 @@ export default function ResultSectionAdmin() {
               <thead>
                 <tr>
                   <th>Client</th>
-                  <th>Niche / Account</th>
+                  <th>Insta URL</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
@@ -250,7 +250,7 @@ export default function ResultSectionAdmin() {
                 {(data.clients || []).length === 0 ? (
                   <tr>
                     <td colSpan="3" style={{ textAlign: 'center', padding: '40px', color: 'var(--admin-text-sub)' }}>
-                      No case studies found. Add one to get started.
+                      No Client Results found. Add one to get started.
                     </td>
                   </tr>
                 ) : (
@@ -291,7 +291,7 @@ export default function ResultSectionAdmin() {
         <div className="admin-modal">
           <div className="admin-modal-content">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', padding: '30px 40px 0' }}>
-              <h3 style={{ margin: 0, padding: 0 }}>{isEditingClient ? 'Edit Case Study' : 'Add New Case Study'}</h3>
+              <h3 style={{ margin: 0, padding: 0 }}>{isEditingClient ? 'Edit Client Results' : 'Add New Client Results'}</h3>
               <i className="fa-solid fa-xmark" style={{ cursor: 'pointer', fontSize: '1.2rem', color: 'var(--admin-text-sub)' }} onClick={() => setShowClientModal(false)}></i>
             </div>
 
@@ -304,7 +304,7 @@ export default function ResultSectionAdmin() {
 
             <form onSubmit={handleClientSubmit}>
               <div className="admin-form-group">
-                <label>Case Study Title (e.g. 12 Months Results)</label>
+                <label>Client Results Title (e.g. 12 Months Results)</label>
                 <input className="admin-form-control" placeholder="Enter title..." value={clientForm.name} onChange={e => setClientForm({...clientForm, name: e.target.value})} required />
               </div>
               <div className="admin-form-group">
@@ -320,7 +320,7 @@ export default function ResultSectionAdmin() {
               <div style={{ display: 'flex', gap: '12px', marginTop: '30px' }}>
                 <button type="submit" className="admin-btn" style={{ flex: 1 }}>
                   <i className="fa-solid fa-check"></i>
-                  {isEditingClient ? 'Update Case Study' : 'Save Case Study'}
+                  {isEditingClient ? 'Update Client Results' : 'Save Client Results'}
                 </button>
                 <button type="button" className="admin-btn admin-btn-secondary" style={{ flex: 1 }} onClick={() => setShowClientModal(false)}>
                   Cancel
