@@ -6,7 +6,7 @@ import heroBg1 from '../assets/images/hero-bg-1.png';
 import heroBg2 from '../assets/images/hero-bg-2.png';
 import logoImg from '../assets/images/logo1.png';
 
-const WA_URL = 'https://wa.me/919128006318?text=Hi%2C%20I%20would%20like%20to%20book%20a%20discovery%20call.';
+const WA_URL = 'https://wa.me/917028654498?text=Hi%2C%20I%20would%20like%20to%20book%20a%20discovery%20call.';
 
 const FOUNDERS = [
   {

@@ -13,6 +13,7 @@ import FaqsSectionAdmin from '../pages/admin/FaqsSectionAdmin';
 import ClientsSectionAdmin from '../pages/admin/ClientsSectionAdmin';
 import ContactSectionAdmin from '../pages/admin/ContactSectionAdmin';
 import TeamSectionAdmin from '../pages/admin/TeamSectionAdmin';
+import TopBannerAdmin from '../pages/admin/TopBannerAdmin';
 
 export default function AdminRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function AdminRoutes() {
       <Route path="/register" element={<Register />} />
       <Route element={<AdminLayout />}>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/top-banner" element={<TopBannerAdmin />} />
         <Route path="/hero-section" element={<HeroSectionAdmin />} />
         <Route path="/stat-section" element={<StatSectionAdmin />} />
         <Route path="/result-section" element={<ResultSectionAdmin />} />

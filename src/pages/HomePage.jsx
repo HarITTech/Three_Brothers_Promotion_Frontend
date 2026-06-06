@@ -10,12 +10,14 @@ import TeamSection from '../components/TeamSection';
 import ContactSection from '../components/ContactSection';
 import LeadModal from '../components/LeadModal';
 import Footer from '../components/Footer';
+import TopBanner from '../components/TopBanner';
 
 export default function HomePage() {
   return (
     <>
       <Header />
       <main>
+        <TopBanner />
         <HeroSection />
         <StatsSection />
         <ResultsSection />

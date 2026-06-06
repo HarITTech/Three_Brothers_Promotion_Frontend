@@ -189,7 +189,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 0px 20px;
   /* background: #000; */
 }
 
@@ -665,7 +665,7 @@
 
 @media (max-width: 968px) {
   .hero-redesigned {
-    padding: 60px 15px 40px;
+    padding: 0px 15px 40px;
     flex-direction: column;
     text-align: center;
   }

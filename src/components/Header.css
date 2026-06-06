@@ -8,7 +8,7 @@
   left: 0;
   width: 100%;
   z-index: 999999;
-  background: rgba(232, 238, 255, 0.97); /* Reduced opacity for blur */
+  background: rgba(247, 245, 255, 0.878); /* Reduced opacity for blur */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(211, 207, 255, 0.297);

@@ -3,25 +3,44 @@ import { api } from '../services/api';
 import Skeleton from './Skeleton';
 import './PackagesSection.css';
 
-const WA_MENTOR = 'https://wa.me/919128006318?text=Hi%2C%20I%20would%20like%20to%20book%20a%201%3A1%20Mentorship%20Session%20with%20Vibhav%20Raj.';
-const WA_CREATOR = 'https://wa.me/919128006318?text=Hi%2C%20I%27m%20interested%20in%20the%20Complete%20Creator%20Growth%20package.';
-
 export default function PackagesSection() {
   const [apiData, setApiData] = useState(null);
+  const [heroData, setHeroData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
-        const data = await api.getSectionData('packages-section');
-        if (data) setApiData(data);
+        const [packRes, heroRes] = await Promise.all([
+          api.getSectionData('packages-section'),
+          api.getSectionData('hero-section')
+        ]);
+        if (packRes) setApiData(packRes);
+        if (heroRes) setHeroData(heroRes);
+      } catch (err) {
+        console.error("Failed to load section data in PackagesSection", err);
       } finally {
         setLoading(false);
       }
     };
     loadData();
   }, []);
+
+  const phone = heroData?.whatsappNumber ? heroData.whatsappNumber.replace(/\D/g, '') : '917020061418';
+
+  const getWaUrl = (heading) => {
+    const isMentorship = heading.toLowerCase().includes('mentorship');
+    const msg = isMentorship 
+      ? 'Hi, I would like to book a 1:1 Mentorship Session with Vibhav Raj.' 
+      : `Hi, I'm interested in the ${heading} package.`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  };
+
+  const getDynamicWaUrl = (p) => {
+    const msg = `Hi, I want to know more about the "${p.heading}" plan (Price: ₹${p.price}, Tagline: ${p.desc}). I'd like to explore this plan.`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  };
 
   const hasDynamicPackages = apiData?.packData?.length > 0;
 
@@ -100,7 +119,7 @@ export default function PackagesSection() {
                     <span dangerouslySetInnerHTML={{ __html: p.tag2.replace(/\\n/g, '<br/>') }} />
                   </div>
                 )}
-                <a href={p.heading.toLowerCase().includes('mentorship') ? WA_MENTOR : WA_CREATOR} target="_blank" rel="noopener noreferrer" className={`package-btn ${p.badge ? 'btn-filled' : 'btn-outline'}`}>
+                <a href={getDynamicWaUrl(p)} target="_blank" rel="noopener noreferrer" className={`package-btn ${p.badge ? 'btn-filled' : 'btn-outline'}`}>
                   {p.btnName || 'Get Started'}
                 </a>
               </div>
@@ -125,7 +144,7 @@ export default function PackagesSection() {
                   <li><i className="fa-solid fa-check" />Monetisation plan: brand deals, courses, consulting</li>
                 </ul>
                 <div className="highlight-text" style={{ marginTop: 'auto' }}>A personalised blueprint for YOUR growth.</div>
-                <a href={WA_MENTOR} target="_blank" rel="noopener noreferrer" className="package-btn btn-outline">Get Started</a>
+                <a href={getWaUrl('1:1 Mentorship Session')} target="_blank" rel="noopener noreferrer" className="package-btn btn-outline">Get Started</a>
               </div>
 
               {/* Card 2: Complete Creator Growth (featured) */}
@@ -152,7 +171,7 @@ export default function PackagesSection() {
                 <div className="highlight-text" style={{ marginTop: 'auto' }}>
                   Scaled multiple creators in this category<br />The fastest path to becoming a known creator.
                 </div>
-                <a href={WA_CREATOR} target="_blank" rel="noopener noreferrer" className="package-btn btn-filled">Get Started</a>
+                <a href={getWaUrl('Complete Creator Growth')} target="_blank" rel="noopener noreferrer" className="package-btn btn-filled">Get Started</a>
               </div>
             </>
           )}

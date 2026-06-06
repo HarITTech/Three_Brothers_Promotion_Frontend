@@ -26,6 +26,7 @@ export default function AdminLayout() {
 
   const navLinks = [
     { path: '/tbp-admin', label: 'Dashboard', icon: 'fa-gauge' },
+    { path: '/tbp-admin/top-banner', label: 'Top Banner', icon: 'fa-bullhorn' },
     { path: '/tbp-admin/hero-section', label: 'Hero Section', icon: 'fa-desktop' },
     { path: '/tbp-admin/stat-section', label: 'Stat Section', icon: 'fa-chart-simple' },
     { path: '/tbp-admin/result-section', label: 'Result Section', icon: 'fa-square-poll-vertical' },

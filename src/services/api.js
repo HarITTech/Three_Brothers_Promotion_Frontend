@@ -1,5 +1,5 @@
-const API_BASE_URL = 'https://three-brothers-promotion-backend.onrender.com/api/v1';
-// const API_BASE_URL = 'http://localhost:3000/api/v1';
+// const API_BASE_URL = 'https://three-brothers-promotion-backend.onrender.com/api/v1';
+const API_BASE_URL = 'http://localhost:3000/api/v1';
 
 const getHeaders = (isFormData = false) => {
   const token = localStorage.getItem('adminToken');
